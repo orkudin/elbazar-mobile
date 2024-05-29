@@ -1,4 +1,4 @@
-import 'package:elbazar_app/features/auth/widget/login_screen.dart';
+import 'package:elbazar_app/screen/list/login_screen.dart';
 import 'package:flutter/material.dart';
 
 

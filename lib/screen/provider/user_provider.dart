@@ -1,4 +1,4 @@
-import 'package:elbazar_app/features/auth/model/token.dart';
+import 'package:elbazar_app/domain/model/token.dart';
 import 'package:riverpod/riverpod.dart';
 
 final userProvider = StateNotifierProvider<UserNotifier, Token?>((ref) {

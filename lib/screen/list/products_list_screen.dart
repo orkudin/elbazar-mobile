@@ -52,9 +52,12 @@ class _ProductsListScreenState extends ConsumerState<ProductsListScreen> {
               itemBuilder: (context, index) {
                 final product = products[index];
                 return Card(
-                  child: ListTile(
-                    title: Text(product.name),
-                    subtitle: Text('\$${product.price.toStringAsFixed(2)}'),
+                  child: InkWell(
+                    child: ListTile(
+                      title: Text(product.name),
+                      subtitle: Text('\$${product.price.toStringAsFixed(2)}'),
+                    ),
+                    // onTap: () => ,
                   ),
                 );
               },
