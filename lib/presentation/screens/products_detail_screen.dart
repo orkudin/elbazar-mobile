@@ -147,7 +147,7 @@ class ProductDetailScreen extends ConsumerWidget {
   Widget _buildActionButtons(BuildContext context, ProductWithImages product,
       String role, WidgetRef ref) {
     return role == 'SALES'
-        ? Column(crossAxisAlignment: CrossAxisAlignment.baseline,
+        ? Column(
             children: [
               Row(
                 children: [
