@@ -62,7 +62,7 @@ class CardProductItem extends ConsumerWidget {
             Text(
               "${product.price.toStringAsFixed(2)} T",
               style: const TextStyle(
-                fontSize: 16,
+                fontSize: 14,
                 fontWeight: FontWeight.bold,
               ),
             ),

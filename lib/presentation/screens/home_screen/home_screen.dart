@@ -1,4 +1,6 @@
-import 'package:elbazar_app/presentation/provider/auth_provider.dart';
+import 'package:elbazar_app/presentation/screens/home_screen/search_screen_list_products.dart';
+import 'package:elbazar_app/presentation/screens/home_screen/widgets/home_app_bar.dart';
+import 'package:elbazar_app/presentation/screens/home_screen/widgets/search_bar_home.dart';
 import 'package:elbazar_app/presentation/screens/products_list_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -11,8 +13,27 @@ class HomeScreen extends ConsumerStatefulWidget {
 }
 
 class _HomeScreenState extends ConsumerState<HomeScreen> {
+  String _searchText = '';
+
+  void _onSearch(String searchText) {
+    setState(() {
+      _searchText = searchText;
+    });
+    Navigator.push(context, MaterialPageRoute(builder: (context) => SearchProductsListScreen(),));
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(body: ProductsListScreen());
+    return Scaffold(
+        appBar: const HomeAppBar(),
+        body: Column(
+          children: [
+            SearchBarHome(onSearch: _onSearch),
+            // SizedBox(
+            //   height: CustomSizes.spaceBtwSections,
+            // ),
+            Expanded(child: ProductsListScreen())
+          ],
+        ));
   }
 }

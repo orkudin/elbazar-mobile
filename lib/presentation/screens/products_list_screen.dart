@@ -22,11 +22,8 @@ class ProductsListScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final responseAsyncGetProducts = ref.watch(productsWithImagesProvider);
-                                                                             
+
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Products'),
-      ),
       body: responseAsyncGetProducts.when(
         data: (products) => GridView.builder(
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(

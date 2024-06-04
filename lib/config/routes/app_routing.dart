@@ -9,7 +9,7 @@ import 'package:elbazar_app/presentation/screens/seller_register/seller_register
 import 'package:go_router/go_router.dart';
 
 final router = GoRouter(
-  initialLocation: '/login',
+  initialLocation: '/home',
   routes: [
     GoRoute(
       path: '/login',

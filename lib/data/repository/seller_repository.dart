@@ -143,4 +143,26 @@ class SellerRepository {
         quantity: quantity,
         categoryId: categoryId);
   }
+
+  Future<List<ProductWithImages>> searchProducts({
+    required int page,
+    required int size,
+    required String sort,
+    required String order,
+    required String searchText,
+    int? categoryId,
+    int? salesId,
+    String? searchType,
+  }) async {
+    return await sellerApiClient.fetchFromSearchProductsWithImages(
+      page: page,
+      size: size,
+      sort: sort,
+      order: order,
+      searchText: searchText,
+      categoryId: categoryId,
+      salesId: salesId,
+      searchType: searchType,
+    );
+  }
 }
