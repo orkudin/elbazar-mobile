@@ -73,7 +73,8 @@ class CardProductItem extends ConsumerWidget {
               ),
             ),
             Text(
-              product.categoryName,
+              
+              product.categoryName == null ? 'null' : product.categoryName,
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
             ),

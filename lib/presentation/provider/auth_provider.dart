@@ -1,5 +1,5 @@
 // providers/auth_provider.dart
-import 'package:elbazar_app/data/network/client/auth_api_client.dart';
+import 'package:elbazar_app/data/network/client_api/auth_api_client.dart';
 import 'package:elbazar_app/data/repository/auth_repository.dart';
 import 'package:elbazar_app/presentation/provider/constant_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';

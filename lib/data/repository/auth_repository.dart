@@ -1,6 +1,6 @@
 // data/auth_repository.dart
-import 'package:elbazar_app/data/network/client/auth_api_client.dart';
-import 'package:elbazar_app/domain/model/token.dart';
+import 'package:elbazar_app/data/network/client_api/auth_api_client.dart';
+import 'package:elbazar_app/domain/model/user_jwt_token/token.dart';
 
 class AuthRepository {
   final AuthApiClient authApiClient;

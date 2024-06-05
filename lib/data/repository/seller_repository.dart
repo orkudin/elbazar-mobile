@@ -1,18 +1,15 @@
 import 'dart:convert';
 
-import 'package:elbazar_app/data/network/client/seller_api_client.dart';
+import 'package:elbazar_app/data/network/client_api/seller_api_client.dart';
 import 'package:elbazar_app/data/network/entity/product_with_images.dart';
 import 'package:elbazar_app/data/network/entity/seller_entity.dart';
-import 'package:elbazar_app/data/network/network_mapper.dart';
 import 'package:elbazar_app/domain/model/category.dart';
 
 class SellerRepository {
   final SellerApiClient sellerApiClient;
-  final NetworkMapper networkMapper;
 
   SellerRepository({
     required this.sellerApiClient,
-    required this.networkMapper,
   });
 
   Future<List<ProductWithImages>> getAllProductsWithImages({
