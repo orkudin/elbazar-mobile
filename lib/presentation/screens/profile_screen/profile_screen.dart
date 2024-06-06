@@ -28,7 +28,9 @@ class ProfileScreen extends ConsumerWidget {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            if (authState.token.isNotEmpty && authState.role != 'ADMIN' && authState.role != 'CUSTOMER')
+            if (authState.token.isNotEmpty &&
+                authState.role != 'ADMIN' &&
+                authState.role != 'CUSTOMER')
               ref.watch(sellerInformationProvider).when(
                     data: (sellerInfo) => Card(
                       margin: EdgeInsets.all(16.0),
@@ -84,13 +86,40 @@ class ProfileScreen extends ConsumerWidget {
             Card(
               margin: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
               child: ListTile(
-                title: Text('Choose Language'),
+                title: Text('Add Product'),
                 trailing: Icon(Icons.arrow_forward),
                 onTap: () {
-                  // Обработчик нажатия на "Choose Language"
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => UploadProductScreen()),
+                  );
                 },
               ),
             ),
+            Card(
+              margin: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+              child: ListTile(
+                title: Text('My Products'),
+                trailing: Icon(Icons.arrow_forward),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => SellerProducts()),
+                  );
+                },
+              ),
+            ),
+            // Card(
+            //   margin: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+            //   child: ListTile(
+            //     title: Text('Choose Language'),
+            //     trailing: Icon(Icons.arrow_forward),
+            //     onTap: () {
+            //       // Обработчик нажатия на "Choose Language"
+            //     },
+            //   ),
+            // ),
             Card(
               margin: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
               child: ListTile(
@@ -120,27 +149,11 @@ class ProfileScreen extends ConsumerWidget {
             Card(
               margin: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
               child: ListTile(
-                title: Text('My Products'),
+                title: Text('Log out'),
                 trailing: Icon(Icons.arrow_forward),
                 onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => SellerProducts()),
-                  );
-                },
-              ),
-            ),
-            Card(
-              margin: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-              child: ListTile(
-                title: Text('Add Product'),
-                trailing: Icon(Icons.arrow_forward),
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => UploadProductScreen()),
-                  );
+                  ref.watch(authStateProvider.notifier).logout();
+                  context.go('/login');
                 },
               ),
             ),

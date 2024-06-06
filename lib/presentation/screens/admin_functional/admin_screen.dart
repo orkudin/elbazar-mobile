@@ -1,7 +1,9 @@
+import 'package:elbazar_app/presentation/provider/auth_provider.dart';
 import 'package:elbazar_app/presentation/screens/admin_functional/admin_seller_documents.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:elbazar_app/presentation/provider/admin_provider.dart';
+import 'package:go_router/go_router.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 
 final adminGetAllSellersProvider =
@@ -77,6 +79,14 @@ class _AdminScreenState extends ConsumerState<AdminScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Documents'),
+        actions: [
+          TextButton(
+              onPressed: () {
+                ref.watch(authStateProvider.notifier).logout();
+                context.go('/login');
+              },
+              child: Text('Log out'))
+        ],
       ),
       body: Column(
         children: [

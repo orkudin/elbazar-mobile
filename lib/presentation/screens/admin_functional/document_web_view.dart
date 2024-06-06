@@ -21,15 +21,14 @@ class _DocumentWebViewState extends ConsumerState<DocumentWebView> {
   dynamic docInfo;
   late String authStateToken;
   late String documentUrl;
-  Uint8List? _pdfData; 
+  Uint8List? _pdfData;
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     docInfo = widget.docInfo;
     authStateToken = ref.watch(authStateProvider).token;
-    documentUrl =
-        'https://daurendan.ru/api/admin/document/${docInfo['id']}';
+    documentUrl = 'https://daurendan.ru/api/admin/document/${docInfo['id']}';
     _fetchPDFData();
   }
 
@@ -42,7 +41,7 @@ class _DocumentWebViewState extends ConsumerState<DocumentWebView> {
 
       if (response.statusCode == 200) {
         setState(() {
-          _pdfData = response.bodyBytes; 
+          _pdfData = response.bodyBytes;
         });
       } else {
         // Handle error fetching PDF
@@ -61,7 +60,8 @@ class _DocumentWebViewState extends ConsumerState<DocumentWebView> {
       ),
       body: isPDF
           ? _pdfData != null
-              ? PDFView(pdfData: _pdfData!, // Display PDF from memory
+              ? PDFView(
+                  pdfData: _pdfData!, // Display PDF from memory
                 )
               : const Center(child: CircularProgressIndicator()) // Loading
           : WebViewWidget(
@@ -71,7 +71,7 @@ class _DocumentWebViewState extends ConsumerState<DocumentWebView> {
                   Uri.parse(documentUrl),
                   headers: {'Authorization': 'Bearer $authStateToken'},
                 ),
-            ), 
+            ),
     );
   }
 }
