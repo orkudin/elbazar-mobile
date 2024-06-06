@@ -24,16 +24,19 @@ final deleteProductWithImagesByIdProvider =
 });
 
 class ProductDetailScreen extends ConsumerWidget {
-  const ProductDetailScreen({Key? key, required this.productId})
+  const ProductDetailScreen(
+      {Key? key, required this.productId, this.fromScreen})
       : super(key: key);
 
   final int productId;
+  final String? fromScreen;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final asyncValueProductById =
         ref.watch(productWithImagesByIdProvider(productId));
     final authState = ref.watch(authStateProvider);
+
     return asyncValueProductById.when(
       data: (product) => Scaffold(
         appBar: AppBar(
@@ -52,7 +55,8 @@ class ProductDetailScreen extends ConsumerWidget {
               SizedBox(
                 height: 8,
               ),
-              _buildActionButtons(context, product, authState.role, ref),
+              if (fromScreen == 'from_my_products_screen')
+                _buildActionButtons(context, product, authState.role, ref),
             ],
           ),
         ),

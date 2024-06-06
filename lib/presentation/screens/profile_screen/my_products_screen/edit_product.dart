@@ -20,6 +20,8 @@ final productDataProvider = StateProvider<Map<String, dynamic>>((ref) => {
       'categoryId': 0,
     });
 
+final selectedCategoryNameProvider = StateProvider<String>((ref) => 'Category');
+
 class EditProductScreen extends ConsumerStatefulWidget {
   const EditProductScreen({Key? key, required this.productId})
       : super(key: key);
@@ -69,7 +71,6 @@ class _EditProductScreenState extends ConsumerState<EditProductScreen> {
     });
   }
 
-
   void _updateProduct() {
     if (_formKey.currentState!.validate()) {
       final sellerApiClient = ref.read(sellerApiClientProvider);
@@ -89,21 +90,23 @@ class _EditProductScreenState extends ConsumerState<EditProductScreen> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext buildContext) {
     final asyncValue =
         ref.watch(productWithImagesByIdProvider(widget.productId));
 
     return Scaffold(
       appBar: AppBar(title: Text('Edit Product')),
       body: asyncValue.when(
-        data: (product) => _buildProductForm(),
+        data: (product) => _buildProductForm(ref),
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (err, stack) => Center(child: Text('Error: $err')),
       ),
     );
   }
 
-  Widget _buildProductForm() {
+  Widget _buildProductForm(WidgetRef ref) {
+    final selectedCategoryName = ref.watch(selectedCategoryNameProvider);
+
     return Form(
       key: _formKey,
       child: ListView(
@@ -198,10 +201,18 @@ class _EditProductScreenState extends ConsumerState<EditProductScreen> {
                       ));
                   ref.read(productDataProvider.notifier).state['categoryId'] =
                       selectedCategory.id;
+                  ref.read(selectedCategoryNameProvider.notifier).state =
+                      selectedCategory.name;
                   print("3------------- ${selectedCategory.name}");
                 },
                 child: Text('Select a category:')),
-            Expanded(child: Text('Your Category'))
+            Expanded(
+                child: Row(children: [
+              Container(
+                  padding: EdgeInsets.all(12),
+                  color: Colors.amber,
+                  child: Text('$selectedCategoryName'))
+            ]))
           ]),
           const SizedBox(height: 24),
           ElevatedButton(

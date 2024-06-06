@@ -1,5 +1,7 @@
 import 'package:elbazar_app/data/repository/auth_repository.dart';
+import 'package:elbazar_app/domain/model/seller_state.dart';
 import 'package:elbazar_app/presentation/provider/auth_provider.dart';
+import 'package:elbazar_app/presentation/provider/seller_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -36,6 +38,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   Widget build(BuildContext context) {
     final authRepository = ref.watch(authRepositoryProvider);
     final authStateNotifier = ref.watch(authStateProvider.notifier);
+    final sellerInfoStateNotifier = ref.watch(sellerStateProvider.notifier);
     return Scaffold(
       appBar: AppBar(title: const Text('Login')),
       body: Padding(
@@ -73,7 +76,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     : null,
               ),
               const SizedBox(height: 16),
-              _buildLoginButton(authRepository, authStateNotifier, context),
+              _buildLoginButton(authRepository, authStateNotifier,
+                  sellerInfoStateNotifier, context),
               _buildRegisterRow(context),
             ],
           ),
@@ -143,8 +147,11 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     );
   }
 
-  Widget _buildLoginButton(AuthRepository authRepository,
-      AuthStateNotifier authStateNotifier, BuildContext context) {
+  Widget _buildLoginButton(
+      AuthRepository authRepository,
+      AuthStateNotifier authStateNotifier,
+      SellerStateNotifier sellerInfoStateNotifier,
+      BuildContext context) {
     return Row(
       children: [
         Expanded(
@@ -164,11 +171,23 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     password: _passwordController.text,
                     role: selectedRole!,
                   );
-                  authStateNotifier.authenticate(token.jwt, token.role);
-                  // ignore: use_build_context_synchronously
+                  var userState;
                   if (token.role == 'ADMIN') {
+                    userState = 'Adminka';
+                    authStateNotifier.authenticate(
+                        token.jwt, token.role, userState);
+                    // ignore: use_build_context_synchronously
                     context.go('/adminPanel');
+                  } else if (token.role == 'SALES' ||
+                      token.role == 'CUSTOMER') {
+                    userState = SellerState.fromJson(token.userData);
+                    sellerInfoStateNotifier.setSeller(userState);
+                    authStateNotifier.authenticate(
+                        token.jwt, token.role, userState);
+                    // ignore: use_build_context_synchronously
+                    context.go('/home');
                   } else {
+                    // ignore: use_build_context_synchronously
                     context.go('/home');
                   }
                   ;

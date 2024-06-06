@@ -19,8 +19,6 @@ final productsWithImagesProvider =
   );
 });
 
-
-
 class SellerProducts extends ConsumerWidget {
   const SellerProducts({super.key});
 
@@ -42,7 +40,10 @@ class SellerProducts extends ConsumerWidget {
             itemCount: products.length,
             itemBuilder: (context, index) {
               final product = products[index];
-              return CardProductItem(product: product);
+              return CardProductItem(
+                product: product,
+                fromScreen: 'from_my_products_screen',
+              );
             }),
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (error, stackTrace) => Center(

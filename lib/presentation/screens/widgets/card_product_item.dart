@@ -6,12 +6,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class CardProductItem extends ConsumerWidget {
-  const CardProductItem({
-    Key? key,
-    required this.product,
-  }) : super(key: key);
+  const CardProductItem({Key? key, required this.product, this.fromScreen})
+      : super(key: key);
 
   final ProductWithImages product;
+  final String? fromScreen;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -24,7 +23,8 @@ class CardProductItem extends ConsumerWidget {
         onTap: () => Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => ProductDetailScreen(productId: product.id),
+            builder: (context) => ProductDetailScreen(
+                productId: product.id, fromScreen: fromScreen),
           ),
         ),
         child: Column(
@@ -73,7 +73,6 @@ class CardProductItem extends ConsumerWidget {
               ),
             ),
             Text(
-              
               product.categoryName == null ? 'null' : product.categoryName,
               maxLines: 2,
               overflow: TextOverflow.ellipsis,

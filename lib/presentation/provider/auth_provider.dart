@@ -26,8 +26,8 @@ final authStateProvider =
 class AuthStateNotifier extends StateNotifier<AuthState> {
   AuthStateNotifier() : super(const AuthState.unauthenticated());
 
-  void authenticate(String token, String role) {
-    state = AuthState.authenticated(token, role);
+  void authenticate(String token, String role, dynamic userInfo) {
+    state = AuthState.authenticated(token, role, userInfo);
   }
 
   void logout() {
@@ -37,13 +37,15 @@ class AuthStateNotifier extends StateNotifier<AuthState> {
 
 //Класс состояния авторизации
 class AuthState {
-  const AuthState.authenticated(this.token, this.role) : isAuthenticated = true;
+  const AuthState.authenticated(this.token, this.role, this.userInfo) : isAuthenticated = true;
   const AuthState.unauthenticated()
       : isAuthenticated = false,
         token = '',
-        role = '';
+        role = '',
+        userInfo = null;
 
   final bool isAuthenticated;
   final String token;
   final String role;
+  final dynamic userInfo;
 }

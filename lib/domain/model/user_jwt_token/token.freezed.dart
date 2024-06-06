@@ -22,6 +22,7 @@ Token _$TokenFromJson(Map<String, dynamic> json) {
 mixin _$Token {
   String get jwt => throw _privateConstructorUsedError;
   String get role => throw _privateConstructorUsedError;
+  dynamic get userData => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -33,7 +34,7 @@ abstract class $TokenCopyWith<$Res> {
   factory $TokenCopyWith(Token value, $Res Function(Token) then) =
       _$TokenCopyWithImpl<$Res, Token>;
   @useResult
-  $Res call({String jwt, String role});
+  $Res call({String jwt, String role, dynamic userData});
 }
 
 /// @nodoc
@@ -51,6 +52,7 @@ class _$TokenCopyWithImpl<$Res, $Val extends Token>
   $Res call({
     Object? jwt = null,
     Object? role = null,
+    Object? userData = freezed,
   }) {
     return _then(_value.copyWith(
       jwt: null == jwt
@@ -61,6 +63,10 @@ class _$TokenCopyWithImpl<$Res, $Val extends Token>
           ? _value.role
           : role // ignore: cast_nullable_to_non_nullable
               as String,
+      userData: freezed == userData
+          ? _value.userData
+          : userData // ignore: cast_nullable_to_non_nullable
+              as dynamic,
     ) as $Val);
   }
 }
@@ -72,7 +78,7 @@ abstract class _$$TokenImplCopyWith<$Res> implements $TokenCopyWith<$Res> {
       __$$TokenImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({String jwt, String role});
+  $Res call({String jwt, String role, dynamic userData});
 }
 
 /// @nodoc
@@ -88,6 +94,7 @@ class __$$TokenImplCopyWithImpl<$Res>
   $Res call({
     Object? jwt = null,
     Object? role = null,
+    Object? userData = freezed,
   }) {
     return _then(_$TokenImpl(
       jwt: null == jwt
@@ -98,6 +105,10 @@ class __$$TokenImplCopyWithImpl<$Res>
           ? _value.role
           : role // ignore: cast_nullable_to_non_nullable
               as String,
+      userData: freezed == userData
+          ? _value.userData
+          : userData // ignore: cast_nullable_to_non_nullable
+              as dynamic,
     ));
   }
 }
@@ -105,7 +116,7 @@ class __$$TokenImplCopyWithImpl<$Res>
 /// @nodoc
 @JsonSerializable()
 class _$TokenImpl implements _Token {
-  _$TokenImpl({required this.jwt, required this.role});
+  _$TokenImpl({required this.jwt, required this.role, this.userData});
 
   factory _$TokenImpl.fromJson(Map<String, dynamic> json) =>
       _$$TokenImplFromJson(json);
@@ -114,10 +125,12 @@ class _$TokenImpl implements _Token {
   final String jwt;
   @override
   final String role;
+  @override
+  final dynamic userData;
 
   @override
   String toString() {
-    return 'Token(jwt: $jwt, role: $role)';
+    return 'Token(jwt: $jwt, role: $role, userData: $userData)';
   }
 
   @override
@@ -126,12 +139,14 @@ class _$TokenImpl implements _Token {
         (other.runtimeType == runtimeType &&
             other is _$TokenImpl &&
             (identical(other.jwt, jwt) || other.jwt == jwt) &&
-            (identical(other.role, role) || other.role == role));
+            (identical(other.role, role) || other.role == role) &&
+            const DeepCollectionEquality().equals(other.userData, userData));
   }
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(runtimeType, jwt, role);
+  int get hashCode => Object.hash(
+      runtimeType, jwt, role, const DeepCollectionEquality().hash(userData));
 
   @JsonKey(ignore: true)
   @override
@@ -148,8 +163,10 @@ class _$TokenImpl implements _Token {
 }
 
 abstract class _Token implements Token {
-  factory _Token({required final String jwt, required final String role}) =
-      _$TokenImpl;
+  factory _Token(
+      {required final String jwt,
+      required final String role,
+      final dynamic userData}) = _$TokenImpl;
 
   factory _Token.fromJson(Map<String, dynamic> json) = _$TokenImpl.fromJson;
 
@@ -157,6 +174,8 @@ abstract class _Token implements Token {
   String get jwt;
   @override
   String get role;
+  @override
+  dynamic get userData;
   @override
   @JsonKey(ignore: true)
   _$$TokenImplCopyWith<_$TokenImpl> get copyWith =>

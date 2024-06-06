@@ -16,6 +16,8 @@ final productDataProvider = StateProvider<Map<String, dynamic>>((ref) => {
       'images': <File>[],
     });
 
+final selectedCategoryNameProvider = StateProvider<String>((ref) => 'Category');
+
 // ignore: must_be_immutable
 class UploadProductScreen extends ConsumerWidget {
   dynamic selectedCategory;
@@ -27,7 +29,7 @@ class UploadProductScreen extends ConsumerWidget {
     final productData = ref.watch(productDataProvider);
     final sellerRepository = ref.read(sellerRepositoryProvider);
     final authState = ref.watch(authStateProvider);
-
+    final selectedCategoryName = ref.watch(selectedCategoryNameProvider);
     return Scaffold(
       appBar: AppBar(
         title: Text('Upload Product'),
@@ -82,10 +84,18 @@ class UploadProductScreen extends ConsumerWidget {
                         ));
                     ref.read(productDataProvider.notifier).state['categoryId'] =
                         selectedCategory.id;
+                    ref.read(selectedCategoryNameProvider.notifier).state =
+                        selectedCategory.name;
                     print("3------------- ${selectedCategory.name}");
                   },
                   child: Text('Select a category:')),
-              const Expanded(child: Text('Your Category'))
+              Expanded(
+                  child: Row(children: [
+                Container(
+                    padding: EdgeInsets.all(12),
+                    color: Colors.amber,
+                    child: Text('$selectedCategoryName'))
+              ]))
             ]),
             const SizedBox(height: 16.0),
             const Text('Product Images (max 4)'),
@@ -95,40 +105,7 @@ class UploadProductScreen extends ConsumerWidget {
               runSpacing: 8.0,
               children: [
                 for (var i = 0; i < 4; i++)
-                  GestureDetector(
-                    onTap: () async {
-                      try {
-                        final picker = ImagePicker();
-                        final pickedFile =
-                            await picker.pickImage(source: ImageSource.gallery);
-                        if (pickedFile != null) {
-                          final images = ref
-                              .read(productDataProvider.notifier)
-                              .state['images'];
-                          if (images.length < 4) {
-                            images.add(File(pickedFile.path));
-                            ref.read(productDataProvider.notifier).state = {
-                              ...productData,
-                              'images': images,
-                            };
-                          }
-                        }
-                      } catch (e) {
-                        print(e);
-                      }
-                    },
-                    child: Container(
-                      width: 80,
-                      height: 80,
-                      decoration: BoxDecoration(
-                        border: Border.all(color: Colors.grey),
-                      ),
-                      child: productData['images'].length > i
-                          ? Image.file(productData['images'][i],
-                              fit: BoxFit.cover)
-                          : Icon(Icons.add_a_photo),
-                    ),
-                  ),
+                  _buildImageContainer(context, ref, i, productData),
               ],
             ),
             const SizedBox(height: 16.0),
@@ -182,6 +159,74 @@ class UploadProductScreen extends ConsumerWidget {
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildImageContainer(
+      BuildContext context, WidgetRef ref, int index, productData) {
+    return Stack(
+      children: [
+        GestureDetector(
+          onTap: () async {
+            try {
+              final picker = ImagePicker();
+              final pickedFile =
+                  await picker.pickImage(source: ImageSource.gallery);
+              if (pickedFile != null) {
+                final images =
+                    ref.read(productDataProvider.notifier).state['images'];
+                if (images.length < 4) {
+                  images.add(File(pickedFile.path));
+                  ref.read(productDataProvider.notifier).state = {
+                    ...productData,
+                    'images': images,
+                  };
+                }
+              }
+            } catch (e) {
+              print(e);
+            }
+          },
+          child: Container(
+            width: 80,
+            height: 80,
+            decoration: BoxDecoration(
+              border: Border.all(color: Colors.grey),
+            ),
+            child: productData['images'].length > index
+                ? Image.file(productData['images'][index], fit: BoxFit.cover)
+                : Icon(Icons.add_a_photo),
+          ),
+        ),
+        if (productData['images'].length > index)
+          Positioned(
+            right: 0,
+            top: 0,
+            child: GestureDetector(
+              onTap: () {
+                final images =
+                    ref.read(productDataProvider.notifier).state['images'];
+                images.removeAt(index);
+                ref.read(productDataProvider.notifier).state = {
+                  ...productData,
+                  'images': images,
+                };
+              },
+              child: Container(
+                padding: const EdgeInsets.all(4),
+                decoration: const BoxDecoration(
+                  color: Colors.red,
+                  shape: BoxShape.circle,
+                ),
+                child: const Icon(
+                  Icons.delete,
+                  color: Colors.white,
+                  size: 16,
+                ),
+              ),
+            ),
+          ),
+      ],
     );
   }
 }

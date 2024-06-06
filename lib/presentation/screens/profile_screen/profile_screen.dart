@@ -1,7 +1,9 @@
 import 'package:elbazar_app/data/network/entity/seller_entity.dart';
 import 'package:elbazar_app/presentation/provider/auth_provider.dart';
 import 'package:elbazar_app/presentation/provider/products_repo_provider.dart';
+import 'package:elbazar_app/presentation/provider/seller_provider.dart';
 import 'package:elbazar_app/presentation/screens/profile_screen/add_product_screen.dart';
+import 'package:elbazar_app/presentation/screens/profile_screen/become_a_seller_screen.dart';
 import 'package:elbazar_app/presentation/screens/profile_screen/my_products_screen/seller_products.dart';
 import 'package:elbazar_app/presentation/screens/profile_screen/prodile_edit_screen.dart';
 import 'package:flutter/material.dart';
@@ -20,6 +22,9 @@ class ProfileScreen extends ConsumerWidget {
     // final authStateNotifier = ref.watch(authStateProvider.notifier);
     // final authState = ref.watch(authStateProvider);
     final authState = ref.watch(authStateProvider);
+    print('------------------------------------');
+    print(authState.userInfo.approved);
+    print('------------------------------------');
 
     return Scaffold(
       appBar: AppBar(
@@ -83,33 +88,35 @@ class ProfileScreen extends ConsumerWidget {
                   },
                 ),
               ),
-            Card(
-              margin: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-              child: ListTile(
-                title: Text('Add Product'),
-                trailing: Icon(Icons.arrow_forward),
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => UploadProductScreen()),
-                  );
-                },
+            if (authState.userInfo.approved == true)
+              Card(
+                margin: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                child: ListTile(
+                  title: Text('Add Product'),
+                  trailing: Icon(Icons.arrow_forward),
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => UploadProductScreen()),
+                    );
+                  },
+                ),
               ),
-            ),
-            Card(
-              margin: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-              child: ListTile(
-                title: Text('My Products'),
-                trailing: Icon(Icons.arrow_forward),
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => SellerProducts()),
-                  );
-                },
+            if (authState.userInfo.approved == true)
+              Card(
+                margin: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                child: ListTile(
+                  title: Text('My Products'),
+                  trailing: Icon(Icons.arrow_forward),
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => SellerProducts()),
+                    );
+                  },
+                ),
               ),
-            ),
             // Card(
             //   margin: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
             //   child: ListTile(
@@ -133,27 +140,30 @@ class ProfileScreen extends ConsumerWidget {
                 },
               ),
             ),
-            Card(
-              margin: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-              child: ListTile(
-                title: Text('Become a Seller'),
-                trailing: Icon(Icons.arrow_forward),
-                onTap: () {
-                  // Navigator.push(
-                  //   context,
-                  //   MaterialPageRoute(builder: (context) => BeASellerScreen()),
-                  // );
-                },
+            if (authState.userInfo.approved != true)
+              Card(
+                margin: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                child: ListTile(
+                  title: Text('Become a Seller'),
+                  trailing: Icon(Icons.arrow_forward),
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => BecomeASellerScreen()),
+                    );
+                  },
+                ),
               ),
-            ),
             Card(
               margin: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
               child: ListTile(
                 title: Text('Log out'),
                 trailing: Icon(Icons.arrow_forward),
                 onTap: () {
-                  ref.watch(authStateProvider.notifier).logout();
                   context.go('/login');
+                  // ref.watch(sellerStateProvider.notifier).clearSeller();
+                  // ref.watch(authStateProvider.notifier).logout();
                 },
               ),
             ),
