@@ -1,6 +1,6 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:elbazar_app/data/network/entity/product_with_images.dart';
-import 'package:elbazar_app/presentation/screens/products_detail_screen.dart';
+import 'package:elbazar_app/presentation/screens/widgets/products_detail_screen.dart';
 import 'package:elbazar_app/presentation/screens/widgets/image_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';

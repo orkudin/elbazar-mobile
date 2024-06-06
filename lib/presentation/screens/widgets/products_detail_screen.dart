@@ -4,6 +4,7 @@ import 'package:elbazar_app/presentation/provider/auth_provider.dart';
 import 'package:elbazar_app/presentation/provider/products_repo_provider.dart';
 import 'package:elbazar_app/presentation/screens/profile_screen/my_products_screen/edit_product.dart';
 import 'package:elbazar_app/presentation/screens/profile_screen/my_products_screen/seller_products.dart';
+import 'package:elbazar_app/presentation/screens/search_screen/search_screen.dart';
 import 'package:elbazar_app/presentation/screens/widgets/image_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -33,7 +34,6 @@ class ProductDetailScreen extends ConsumerWidget {
     final asyncValueProductById =
         ref.watch(productWithImagesByIdProvider(productId));
     final authState = ref.watch(authStateProvider);
-
     return asyncValueProductById.when(
       data: (product) => Scaffold(
         appBar: AppBar(
@@ -46,10 +46,12 @@ class ProductDetailScreen extends ConsumerWidget {
             children: [
               _buildImageSlider(product),
               const SizedBox(height: 14),
-              _buildProductInfo(context, product),
+              _buildProductInfo(context, product, ref),
               const SizedBox(height: 16),
               _buildDescription(context, product),
-               SizedBox(height: 8,),
+              SizedBox(
+                height: 8,
+              ),
               _buildActionButtons(context, product, authState.role, ref),
             ],
           ),
@@ -80,7 +82,8 @@ class ProductDetailScreen extends ConsumerWidget {
           );
   }
 
-  Widget _buildProductInfo(BuildContext context, ProductWithImages product) {
+  Widget _buildProductInfo(
+      BuildContext context, ProductWithImages product, WidgetRef ref) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -112,12 +115,24 @@ class ProductDetailScreen extends ConsumerWidget {
               ),
         ),
         const SizedBox(height: 8),
-        Text(
-          'Category: ${product.categoryName}',
-          style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                color: Theme.of(context).colorScheme.primary,
-              ),
-        ),
+        TextButton(
+          onPressed: () {
+            print(product.categoryName);
+
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => SearchScreen(
+                      searchValue: '', categoryId: product.categoryId),
+                ));
+          },
+          child: Text(
+            'Category: ${product.categoryName}',
+            style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                  color: Theme.of(context).colorScheme.primary,
+                ),
+          ),
+        )
       ],
     );
   }
@@ -167,7 +182,9 @@ class ProductDetailScreen extends ConsumerWidget {
                   ),
                 ],
               ),
-              SizedBox(height: 8,),
+              SizedBox(
+                height: 8,
+              ),
               Row(
                 children: [
                   Expanded(
@@ -191,10 +208,11 @@ class ProductDetailScreen extends ConsumerWidget {
                             ],
                           ),
                         );
-                  
+
                         if (confirmed == true) {
                           ref
-                              .read(deleteProductWithImagesByIdProvider(product.id)
+                              .read(deleteProductWithImagesByIdProvider(
+                                      product.id)
                                   .future)
                               .then((value) =>
                                   ref.invalidate(productsWithImagesProvider))
@@ -204,7 +222,7 @@ class ProductDetailScreen extends ConsumerWidget {
                                 content: Text('Product deletion requested'),
                               ),
                             );
-                  
+
                             Navigator.pop(context);
                           });
                         }

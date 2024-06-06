@@ -1,5 +1,5 @@
 import 'package:elbazar_app/data/repository/seller_repository.dart';
-import 'package:elbazar_app/presentation/provider/constant_provider.dart';
+import 'package:elbazar_app/config/global_providers/base_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:elbazar_app/data/network/client_api/seller_api_client.dart';
 
@@ -12,8 +12,6 @@ final sellerApiClientProvider = Provider<SellerApiClient>((ref) {
 //Провайдер к продуктовому провайдеру
 final sellerRepositoryProvider = Provider<SellerRepository>((ref) {
   final sellerApiClient = ref.watch(sellerApiClientProvider);
-  
 
-  return SellerRepository(
-      sellerApiClient: sellerApiClient);
+  return SellerRepository(sellerApiClient: sellerApiClient);
 });

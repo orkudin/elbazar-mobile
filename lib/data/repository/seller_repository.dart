@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:elbazar_app/data/network/client_api/seller_api_client.dart';
 import 'package:elbazar_app/data/network/entity/product_with_images.dart';
 import 'package:elbazar_app/data/network/entity/seller_entity.dart';

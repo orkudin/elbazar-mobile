@@ -1,9 +1,9 @@
-import 'package:elbazar_app/config/constatnts/colors.dart';
-import 'package:elbazar_app/config/constatnts/sizes.dart';
+import 'package:elbazar_app/config/theme/constatnts/colors.dart';
+import 'package:elbazar_app/config/theme/constatnts/sizes.dart';
 import 'package:flutter/material.dart';
 
-class SearchBarHome extends StatefulWidget {
-  const SearchBarHome({
+class SearchBarCustom extends StatefulWidget {
+  const SearchBarCustom({
     Key? key,
     required this.onSearch,
     this.icon = Icons.search,
@@ -19,18 +19,26 @@ class SearchBarHome extends StatefulWidget {
   _SearchBarHomeState createState() => _SearchBarHomeState();
 }
 
-class _SearchBarHomeState extends State<SearchBarHome> {
-  final TextEditingController _controller = TextEditingController();
+class _SearchBarHomeState extends State<SearchBarCustom> {
+  final TextEditingController _searchValueController = TextEditingController();
+  @override
+  void dispose() {
+    _searchValueController.dispose();
+    // TODO: implement dispose
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     final dark = Theme.of(context).brightness == Brightness.dark;
 
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: CustomSizes.defaultSpace),
+      padding: const EdgeInsets.only(
+          right: CustomSizes.defaultSpace,
+          left: CustomSizes.defaultSpace,
+          bottom: 8),
       child: Container(
         width: MediaQuery.of(context).size.width,
-        padding: EdgeInsets.all(16),
         decoration: BoxDecoration(
           color: widget.showBackground
               ? dark
@@ -43,12 +51,10 @@ class _SearchBarHomeState extends State<SearchBarHome> {
         ),
         child: Row(
           children: [
-            Icon(widget.icon, color: CustomColors.black),
-            SizedBox(width: CustomSizes.spaceBtwItems),
             Expanded(
               child: TextField(
-                controller: _controller,
-                decoration: InputDecoration(
+                controller: _searchValueController,
+                decoration: const InputDecoration(
                   hintText: 'Search',
                   border: InputBorder.none,
                 ),
@@ -56,8 +62,11 @@ class _SearchBarHomeState extends State<SearchBarHome> {
               ),
             ),
             IconButton(
-              icon: Icon(Icons.search, color: CustomColors.black),
-              onPressed: () => widget.onSearch(_controller.text),
+              icon: const Icon(Icons.search, color: CustomColors.black),
+              onPressed: () {
+                widget.onSearch(_searchValueController.text);
+                _searchValueController.text = '';
+              },
             ),
           ],
         ),

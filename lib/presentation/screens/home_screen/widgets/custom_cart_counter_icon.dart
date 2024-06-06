@@ -1,4 +1,4 @@
-import 'package:elbazar_app/config/constatnts/colors.dart';
+import 'package:elbazar_app/config/theme/constatnts/colors.dart';
 import 'package:flutter/material.dart';
 
 class CustomCartCounterIcon extends StatelessWidget {

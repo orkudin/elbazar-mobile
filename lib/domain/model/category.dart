@@ -19,4 +19,32 @@ class Category {
           [],
     );
   }
+
+  int? getIdFromName(String name) {
+    if (this.name == name) {
+      return id;
+    }
+    for (var childCategory in childCategories) {
+      final childId = childCategory.getIdFromName(name);
+      if (childId != null) {
+        return childId;
+      }
+    }
+    return null;
+  }
+
+  /// Gets the name of a category with the given ID within this category or its descendants.
+  /// Returns an empty string "" if no matching category is found.
+  String getNameFromId(int id) {
+    if (this.id == id) {
+      return name;
+    }
+    for (var childCategory in childCategories) {
+      final childName = childCategory.getNameFromId(id);
+      if (childName.isNotEmpty) {
+        return childName;
+      }
+    }
+    return '';
+  }
 }

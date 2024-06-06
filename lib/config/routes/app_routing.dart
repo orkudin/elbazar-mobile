@@ -1,15 +1,16 @@
 import 'package:elbazar_app/config/routes/root_screen.dart';
-import 'package:elbazar_app/presentation/screens/cart_screen.dart';
-import 'package:elbazar_app/presentation/screens/categories_screen.dart';
-import 'package:elbazar_app/presentation/screens/customer_register/customer_register.dart';
+import 'package:elbazar_app/presentation/screens/admin_functional/admin_screen.dart';
+import 'package:elbazar_app/presentation/screens/cart_screen/cart_screen.dart';
+import 'package:elbazar_app/presentation/screens/categories_screen/categories_screen.dart';
+import 'package:elbazar_app/presentation/screens/register_customer_screen/customer_register.dart';
 import 'package:elbazar_app/presentation/screens/home_screen/home_screen.dart';
 import 'package:elbazar_app/presentation/screens/login_user/login_screen.dart';
 import 'package:elbazar_app/presentation/screens/profile_screen/profile_screen.dart';
-import 'package:elbazar_app/presentation/screens/seller_register/seller_register.dart';
+import 'package:elbazar_app/presentation/screens/register_seller_screen/seller_register.dart';
 import 'package:go_router/go_router.dart';
 
 final router = GoRouter(
-  initialLocation: '/home',
+  initialLocation: '/login',
   routes: [
     GoRoute(
       path: '/login',
@@ -22,6 +23,10 @@ final router = GoRouter(
     GoRoute(
       path: '/registerCustomer',
       builder: (context, state) => const CustomerRegister(),
+    ),
+    GoRoute(
+      path: '/adminPanel',
+      builder: (context, state) => AdminScreen(),
     ),
     StatefulShellRoute.indexedStack(
       builder: (context, state, navigationShell) =>
@@ -39,7 +44,7 @@ final router = GoRouter(
           routes: [
             GoRoute(
               path: '/categories',
-              builder: (context, state) => const CategoriesScreen(),
+              builder: (context, state) => CategoriesScreen(),
             )
           ],
         ),

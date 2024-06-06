@@ -1,29 +1,22 @@
 import 'package:elbazar_app/presentation/provider/auth_provider.dart';
-import 'package:elbazar_app/presentation/screens/customer_register/customer_register_complete.dart%20copy.dart';
+import 'package:elbazar_app/presentation/screens/register_customer_screen/customer_register_confirm.dart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class CustomerRegisterConfirm extends ConsumerStatefulWidget {
-  const CustomerRegisterConfirm({super.key, required this.uuid});
-  final String uuid;
+class CustomerRegister extends ConsumerStatefulWidget {
+  const CustomerRegister({super.key});
 
   @override
-  ConsumerState<CustomerRegisterConfirm> createState() =>
-      _CustomerRegisterConfirmState();
+  ConsumerState<CustomerRegister> createState() => _CustomerRegisterState();
 }
 
-class _CustomerRegisterConfirmState
-    extends ConsumerState<CustomerRegisterConfirm> {
+class _CustomerRegisterState extends ConsumerState<CustomerRegister> {
   final _formKey = GlobalKey<FormState>();
-
-  final _codeController = TextEditingController();
-
-  final List<String> roles = ['IP', 'TOO', 'AO'];
-  String? selectedCompanyType;
+  final TextEditingController _emailNameController = TextEditingController();
 
   @override
   void dispose() {
-    _codeController.dispose();
+    _emailNameController.dispose();
     super.dispose();
   }
 
@@ -49,19 +42,21 @@ class _CustomerRegisterConfirmState
                 style: Theme.of(context).textTheme.titleMedium!.copyWith(
                     color: Theme.of(context).colorScheme.onBackground),
               ),
-              SizedBox(height: 16,),
+              SizedBox(
+                height: 16,
+              ),
               TextFormField(
-                controller: _codeController,
+                controller: _emailNameController,
                 decoration: InputDecoration(
                   label: Text(
-                    'Code',
+                    'Email',
                     style: Theme.of(context).textTheme.titleSmall!.copyWith(
                         color: Theme.of(context).colorScheme.onBackground),
                   ),
                 ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Please enter your code';
+                    return 'Please enter your email';
                   }
                   return null;
                 },
@@ -85,14 +80,14 @@ class _CustomerRegisterConfirmState
                         if (_formKey.currentState!.validate()) {
                           try {
                             await authRepository
-                                .registerCustomerConfirm(
-                                    uuid: widget.uuid,
-                                    code: _codeController.text)
-                                 .then(
-                                  (value) => Navigator.of(context).push(
+                                .registerCustomer(
+                                  email: _emailNameController.text,
+                                )
+                                .then(
+                                  (uuid) => Navigator.of(context).push(
                                     MaterialPageRoute(
                                       builder: (context) =>
-                                          CustomerRegisterComplete(uuid: widget.uuid),
+                                          CustomerRegisterConfirm(uuid: uuid),
                                     ),
                                   ),
                                 );

@@ -6,6 +6,7 @@ import 'package:elbazar_app/presentation/screens/profile_screen/my_products_scre
 import 'package:elbazar_app/presentation/screens/profile_screen/prodile_edit_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 final sellerInformationProvider = FutureProvider<SellerEntity>((ref) async {
   final sellerRepository = ref.read(sellerRepositoryProvider);
@@ -18,7 +19,8 @@ class ProfileScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     // final authStateNotifier = ref.watch(authStateProvider.notifier);
     // final authState = ref.watch(authStateProvider);
-    final responseAsyncGetSellerInfo = ref.watch(sellerInformationProvider);
+    final authState = ref.watch(authStateProvider);
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Profile'),
@@ -26,47 +28,59 @@ class ProfileScreen extends ConsumerWidget {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            responseAsyncGetSellerInfo.when(
-              data: (sellerInfo) => Card(
-                margin: EdgeInsets.all(16.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    ListTile(
-                      title: Text('Edit Profile'),
-                      trailing: Icon(Icons.edit),
-                      onTap: () {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (context) =>
-                                ProfileEditScreen(sellerEntity: sellerInfo),
-                          ),
-                        );
-                        // Обработчик нажатия на "Edit Profile"
-                      },
-                    ),
-                    Padding(
-                      padding: EdgeInsets.all(16.0),
+            if (authState.token.isNotEmpty && authState.role != 'ADMIN' && authState.role != 'CUSTOMER')
+              ref.watch(sellerInformationProvider).when(
+                    data: (sellerInfo) => Card(
+                      margin: EdgeInsets.all(16.0),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text('Username: ${sellerInfo.firstName}'),
-                          SizedBox(height: 8.0),
-                          Text('Email: ${sellerInfo.email}'),
-                          SizedBox(height: 8.0),
-                          Text('Phone: ${sellerInfo.phone}'),
-                          SizedBox(height: 8.0),
-                          Text('BIN: ${sellerInfo.bin}'),
+                          ListTile(
+                            title: Text('Edit Profile'),
+                            trailing: Icon(Icons.edit),
+                            onTap: () {
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (context) => ProfileEditScreen(
+                                      sellerEntity: sellerInfo),
+                                ),
+                              );
+                              // Обработчик нажатия на "Edit Profile"
+                            },
+                          ),
+                          Padding(
+                            padding: EdgeInsets.all(16.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text('Username: ${sellerInfo.firstName}'),
+                                SizedBox(height: 8.0),
+                                Text('Email: ${sellerInfo.email}'),
+                                SizedBox(height: 8.0),
+                                Text('Phone: ${sellerInfo.phone}'),
+                                SizedBox(height: 8.0),
+                                Text('BIN: ${sellerInfo.bin}'),
+                              ],
+                            ),
+                          ),
                         ],
                       ),
                     ),
-                  ],
+                    error: (error, stackTrace) =>
+                        Center(child: Text('Error: $error')),
+                    loading: () => Center(child: CircularProgressIndicator()),
+                  ),
+            if (authState.token.isEmpty)
+              Card(
+                margin: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                child: ListTile(
+                  title: Text('Log into an account'),
+                  trailing: Icon(Icons.arrow_forward),
+                  onTap: () {
+                    context.go('/login');
+                  },
                 ),
               ),
-              error: (error, stackTrace) =>
-                  Center(child: Text('Error: $error')),
-              loading: () => Center(child: CircularProgressIndicator()),
-            ),
             Card(
               margin: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
               child: ListTile(
@@ -124,7 +138,8 @@ class ProfileScreen extends ConsumerWidget {
                 onTap: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => UploadProductScreen()),
+                    MaterialPageRoute(
+                        builder: (context) => UploadProductScreen()),
                   );
                 },
               ),

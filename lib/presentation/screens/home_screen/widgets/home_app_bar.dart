@@ -1,5 +1,5 @@
-import 'package:elbazar_app/config/constatnts/colors.dart';
-import 'package:elbazar_app/presentation/screens/cart_screen.dart';
+import 'package:elbazar_app/config/theme/constatnts/colors.dart';
+import 'package:elbazar_app/presentation/screens/cart_screen/cart_screen.dart';
 import 'package:elbazar_app/presentation/screens/home_screen/widgets/custom_cart_counter_icon.dart';
 import 'package:elbazar_app/presentation/screens/widgets/app_bar.dart';
 import 'package:flutter/material.dart';

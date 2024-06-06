@@ -23,22 +23,25 @@ class ProductsListScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final responseAsyncGetProducts = ref.watch(productsWithImagesProvider);
 
-    return Scaffold(
-      body: responseAsyncGetProducts.when(
-        data: (products) => GridView.builder(
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2,
-              childAspectRatio: 2 / 4,
-              mainAxisSpacing: 20,
-            ),
-            itemCount: products.length,
-            itemBuilder: (context, index) {
-              final product = products[index];
-              return CardProductItem(product: product);
-            }),
-        loading: () => const Center(child: CircularProgressIndicator()),
-        error: (error, stackTrace) => Center(
-          child: Text('Error: $error'),
+    return RefreshIndicator(
+      onRefresh: () => ref.refresh(productsWithImagesProvider.future),
+      child: Scaffold(
+        body: responseAsyncGetProducts.when(
+          data: (products) => GridView.builder(
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                childAspectRatio: 2 / 4,
+                mainAxisSpacing: 20,
+              ),
+              itemCount: products.length,
+              itemBuilder: (context, index) {
+                final product = products[index];
+                return CardProductItem(product: product);
+              }),
+          loading: () => const Center(child: CircularProgressIndicator()),
+          error: (error, stackTrace) => Center(
+            child: Text('Error: $error'),
+          ),
         ),
       ),
     );

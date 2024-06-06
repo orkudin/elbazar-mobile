@@ -1,5 +1,7 @@
 import 'package:elbazar_app/presentation/provider/auth_provider.dart';
 import 'package:elbazar_app/presentation/provider/products_repo_provider.dart';
+import 'package:elbazar_app/presentation/screens/categories_screen/categories_screen.dart';
+import 'package:elbazar_app/presentation/screens/profile_screen/add_product_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:elbazar_app/data/network/entity/product_with_images.dart';
@@ -9,6 +11,14 @@ final productWithImagesByIdProvider =
   final sellerApiClient = ref.read(sellerApiClientProvider);
   return await sellerApiClient.getProductWithImagesById(productId: productId);
 });
+
+final productDataProvider = StateProvider<Map<String, dynamic>>((ref) => {
+      'name': '',
+      'description': '',
+      'price': 0.0,
+      'quantity': 0,
+      'categoryId': 0,
+    });
 
 class EditProductScreen extends ConsumerStatefulWidget {
   const EditProductScreen({Key? key, required this.productId})
@@ -22,7 +32,7 @@ class EditProductScreen extends ConsumerStatefulWidget {
 
 class _EditProductScreenState extends ConsumerState<EditProductScreen> {
   final _formKey = GlobalKey<FormState>();
-
+  dynamic selectedCategory;
   late TextEditingController _nameController;
   late TextEditingController _descriptionController;
   late TextEditingController _priceController;
@@ -59,15 +69,6 @@ class _EditProductScreenState extends ConsumerState<EditProductScreen> {
     });
   }
 
-  @override
-  void dispose() {
-    _nameController.dispose();
-    _descriptionController.dispose();
-    _priceController.dispose();
-    _quantityController.dispose();
-    _categoryIdController.dispose();
-    super.dispose();
-  }
 
   void _updateProduct() {
     if (_formKey.currentState!.validate()) {
@@ -185,24 +186,23 @@ class _EditProductScreenState extends ConsumerState<EditProductScreen> {
             },
           ),
           const SizedBox(height: 16),
-          TextFormField(
-            controller: _categoryIdController,
-            decoration: const InputDecoration(
-              labelText: 'Category ID',
-              border: OutlineInputBorder(),
-            ),
-            keyboardType: TextInputType.number,
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return 'Please enter a category ID';
-              }
-              final intValue = int.tryParse(value);
-              if (intValue == null || intValue <= 0) {
-                return 'Please enter a valid category ID';
-              }
-              return null;
-            },
-          ),
+          Row(children: [
+            TextButton(
+                onPressed: () async {
+                  selectedCategory = await Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => CategoriesScreen(
+                          previousScreen: 'add_product',
+                        ),
+                      ));
+                  ref.read(productDataProvider.notifier).state['categoryId'] =
+                      selectedCategory.id;
+                  print("3------------- ${selectedCategory.name}");
+                },
+                child: Text('Select a category:')),
+            Expanded(child: Text('Your Category'))
+          ]),
           const SizedBox(height: 24),
           ElevatedButton(
             onPressed: _updateProduct,

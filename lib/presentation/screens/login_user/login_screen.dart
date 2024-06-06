@@ -47,24 +47,30 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
             children: [
               _buildTitle(context, 'Log in to account'),
               _buildTitle(context, 'Enter your details below'),
-              SizedBox(height: 16,),
+              SizedBox(
+                height: 16,
+              ),
               _buildRoleDropdown(),
               _buildTextField(
                 context,
                 controller: _usernameController,
                 label: 'Email',
-                validator: (value) =>
-                    value == null || value.isEmpty ? 'Please enter your email' : null,
+                validator: (value) => value == null || value.isEmpty
+                    ? 'Please enter your email'
+                    : null,
               ),
-              SizedBox(height: 16,),
+              SizedBox(
+                height: 16,
+              ),
               _buildTextField(
                 context,
                 controller: _passwordController,
                 label: 'Password',
                 obscureText: _obscurePassword,
                 suffixIcon: _buildPasswordVisibilityIcon(),
-                validator: (value) =>
-                    value == null || value.isEmpty ? 'Please enter your password' : null,
+                validator: (value) => value == null || value.isEmpty
+                    ? 'Please enter your password'
+                    : null,
               ),
               const SizedBox(height: 16),
               _buildLoginButton(authRepository, authStateNotifier, context),
@@ -79,8 +85,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   Widget _buildTitle(BuildContext context, String text) {
     return Text(
       text,
-      style: Theme.of(context).textTheme.titleLarge!.copyWith(
-          color: Theme.of(context).colorScheme.onBackground),
+      style: Theme.of(context)
+          .textTheme
+          .titleLarge!
+          .copyWith(color: Theme.of(context).colorScheme.onBackground),
     );
   }
 
@@ -113,8 +121,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       decoration: InputDecoration(
         label: Text(
           label,
-          style: Theme.of(context).textTheme.titleSmall!.copyWith(
-              color: Theme.of(context).colorScheme.onBackground),
+          style: Theme.of(context)
+              .textTheme
+              .titleSmall!
+              .copyWith(color: Theme.of(context).colorScheme.onBackground),
         ),
         suffixIcon: suffixIcon,
       ),
@@ -133,10 +143,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     );
   }
 
-  Widget _buildLoginButton(
-      AuthRepository authRepository,
-      AuthStateNotifier authStateNotifier,
-      BuildContext context) {
+  Widget _buildLoginButton(AuthRepository authRepository,
+      AuthStateNotifier authStateNotifier, BuildContext context) {
     return Row(
       children: [
         Expanded(
@@ -158,7 +166,12 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   );
                   authStateNotifier.authenticate(token.jwt, token.role);
                   // ignore: use_build_context_synchronously
-                  context.go('/home');
+                  if (token.role == 'ADMIN') {
+                    context.go('/adminPanel');
+                  } else {
+                    context.go('/home');
+                  }
+                  ;
                 } catch (e) {
                   // Handle login error
                   print('Login failed: $e');
