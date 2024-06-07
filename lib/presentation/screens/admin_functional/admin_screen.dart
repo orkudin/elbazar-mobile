@@ -82,8 +82,9 @@ class _AdminScreenState extends ConsumerState<AdminScreen> {
         actions: [
           TextButton(
               onPressed: () {
+               
+                context.go('/login'); 
                 ref.watch(authStateProvider.notifier).logout();
-                context.go('/login');
               },
               child: Text('Log out'))
         ],

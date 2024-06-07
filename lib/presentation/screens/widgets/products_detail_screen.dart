@@ -23,6 +23,17 @@ final deleteProductWithImagesByIdProvider =
       productId: productId, jwt: authState.token);
 });
 
+final changeProductStatusProvider =
+    FutureProvider.family<void, Map<String, dynamic>>((ref, params) async {
+  final sellerApiClient = ref.read(sellerApiClientProvider);
+  final authState = ref.watch(authStateProvider);
+  final productId = params['productId'] as int;
+  final isActive = params['isActive'] as bool;
+
+  return await sellerApiClient.changeProductStatus(
+      productId: productId, jwt: authState.token, isActive: isActive);
+});
+
 class ProductDetailScreen extends ConsumerWidget {
   const ProductDetailScreen(
       {Key? key, required this.productId, this.fromScreen})
@@ -232,6 +243,59 @@ class ProductDetailScreen extends ConsumerWidget {
                         }
                       },
                       child: const Text('Delete Product'),
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(
+                height: 8,
+              ),
+              Row(
+                children: [
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: () {
+                        // Show a dialog to confirm the status change
+                        showDialog(
+                          context: context,
+                          builder: (context) => AlertDialog(
+                            title: const Text('Change Product Status'),
+                            content: const Text(
+                                'Are you sure you want to change the status of this product?'),
+                            actions: [
+                              TextButton(
+                                onPressed: () => Navigator.pop(context),
+                                child: const Text('Cancel'),
+                              ),
+                              TextButton(
+                                onPressed: () async {
+                                  // Call the changeProductStatusProvider
+                                  final result = ref.read(
+                                      changeProductStatusProvider({
+                                    'productId': product.id,
+                                    'isActive': !product.active
+                                  }).future).then((value) =>  ref.refresh(productWithImagesByIdProvider(productId)));
+                                    // ref.refresh(productWithImagesByIdProvider(productId));
+                                  
+                                  if (result != null) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        content: Text(product.active
+                                            ? 'Product deactivated'
+                                            : 'Product activated'),
+                                        duration: const Duration(seconds: 2),
+                                      ),
+                                    );
+                                  }
+                                  Navigator.pop(context);
+                                },
+                                child: const Text('Confirm'),
+                              ),
+                            ],
+                          ),
+                        );
+                      },
+                      child: Text(product.active ? 'Deactivate' : 'Activate'),
                     ),
                   ),
                 ],

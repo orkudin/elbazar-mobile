@@ -96,7 +96,7 @@ class _SellerRegisterConfirmState extends ConsumerState<SellerRegisterConfirm> {
                       onPressed: () async {
                         if (_formKey.currentState!.validate()) {
                           try {
-                            await authRepository
+                            final checkRegisterStatus = await authRepository
                                 .registerSellerConfirm(
                                     uuid: widget.uuid,
                                     code: _codeController.text,

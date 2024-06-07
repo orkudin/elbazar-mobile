@@ -1,4 +1,5 @@
 import 'package:elbazar_app/data/network/client_api/seller_api_client.dart';
+import 'package:elbazar_app/data/network/entity/order_entity.dart';
 import 'package:elbazar_app/data/network/entity/product_with_images.dart';
 import 'package:elbazar_app/data/network/entity/seller_entity.dart';
 import 'package:elbazar_app/domain/model/category.dart';
@@ -159,5 +160,17 @@ class SellerRepository {
       salesId: salesId,
       searchType: searchType,
     );
+  }
+
+  Future<List<OrderEntity>> fetchSellerOrders({required String jwt}) async {
+    final response = await sellerApiClient.fetchSellerOrders(jwt: jwt);
+
+    if (response['data'] is List) {
+      return (response['data'] as List<dynamic>)
+          .map((orderData) => OrderEntity.fromJson(orderData))
+          .toList();
+    } else {
+      return []; // Or handle the case where data is not a list
+    }
   }
 }

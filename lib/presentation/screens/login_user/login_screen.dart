@@ -1,3 +1,4 @@
+import 'package:elbazar_app/data/network/entity/seller_entity.dart';
 import 'package:elbazar_app/data/repository/auth_repository.dart';
 import 'package:elbazar_app/domain/model/seller_state.dart';
 import 'package:elbazar_app/presentation/provider/auth_provider.dart';
@@ -180,7 +181,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     context.go('/adminPanel');
                   } else if (token.role == 'SALES' ||
                       token.role == 'CUSTOMER') {
-                    userState = SellerState.fromJson(token.userData);
+                    userState = SellerEntity.fromJson(token.userData);
                     sellerInfoStateNotifier.setSeller(userState);
                     authStateNotifier.authenticate(
                         token.jwt, token.role, userState);
