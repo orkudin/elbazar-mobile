@@ -51,14 +51,30 @@ class AuthRepository {
     return await authApiClient.registerCustomer(email: email);
   }
 
-  Future<String> registerCustomerConfirm({
+  // Future<String> registerCustomerConfirm({
+  //   required String uuid,
+  //   required String code,
+  // }) async {
+  //   return await authApiClient.registerCustomerConfirm(
+  //     uuid: uuid,
+  //     code: code,
+  //   );
+  // }
+
+  Future<dynamic> registerCustomerConfirm({
     required String uuid,
     required String code,
   }) async {
-    return await authApiClient.registerCustomerConfirm(
+    final response = await authApiClient.registerCustomerConfirm(
       uuid: uuid,
       code: code,
     );
+
+    if (response != null) {
+      return response; 
+    } else {
+      return response; 
+    }
   }
 
   Future<String> registerCustomerComplete({
@@ -101,5 +117,3 @@ class AuthRepository {
     );
   }
 }
-
-

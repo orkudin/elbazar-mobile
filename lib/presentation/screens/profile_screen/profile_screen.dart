@@ -272,7 +272,7 @@ class ProfileScreen extends ConsumerWidget {
                   },
                 ),
               ),
-            if (authState.userInfo!.approved == true)
+            if (authState.role != 'CUSTOMER' && authState.userInfo!.approved == true)
               Card(
                 margin: const EdgeInsets.symmetric(
                     horizontal: 16.0, vertical: 8.0),
@@ -288,7 +288,7 @@ class ProfileScreen extends ConsumerWidget {
                   },
                 ),
               ),
-            if (authState.userInfo!.approved == true)
+            if (authState.role != 'CUSTOMER' && authState.userInfo!.approved == true)
               Card(
                 margin: const EdgeInsets.symmetric(
                     horizontal: 16.0, vertical: 8.0),
@@ -327,7 +327,7 @@ class ProfileScreen extends ConsumerWidget {
                 },
               ),
             ),
-            if (authState.userInfo!.approved != true)
+            if (authState.role != 'CUSTOMER' && authState.userInfo!.approved != true)
               Card(
                 margin: const EdgeInsets.symmetric(
                     horizontal: 16.0, vertical: 8.0),

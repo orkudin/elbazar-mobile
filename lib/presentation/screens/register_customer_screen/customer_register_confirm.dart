@@ -1,5 +1,5 @@
 import 'package:elbazar_app/presentation/provider/auth_provider.dart';
-import 'package:elbazar_app/presentation/screens/register_customer_screen/customer_register_complete.dart%20copy.dart';
+import 'package:elbazar_app/presentation/screens/register_customer_screen/customer_register_complete.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -49,7 +49,9 @@ class _CustomerRegisterConfirmState
                 style: Theme.of(context).textTheme.titleMedium!.copyWith(
                     color: Theme.of(context).colorScheme.onBackground),
               ),
-              SizedBox(height: 16,),
+              SizedBox(
+                height: 16,
+              ),
               TextFormField(
                 controller: _codeController,
                 decoration: InputDecoration(
@@ -84,18 +86,16 @@ class _CustomerRegisterConfirmState
                       onPressed: () async {
                         if (_formKey.currentState!.validate()) {
                           try {
-                            await authRepository
-                                .registerCustomerConfirm(
+                            final response =
+                                await authRepository.registerCustomerConfirm(
                                     uuid: widget.uuid,
-                                    code: _codeController.text)
-                                 .then(
-                                  (value) => Navigator.of(context).push(
-                                    MaterialPageRoute(
-                                      builder: (context) =>
-                                          CustomerRegisterComplete(uuid: widget.uuid),
-                                    ),
-                                  ),
-                                );
+                                    code: _codeController.text);
+                            print('--------------2-------------');
+                            print(response);
+                            print('---------------2------------');
+                            Navigator.of(context).push(MaterialPageRoute(
+                                builder: (context) => CustomerRegisterComplete(
+                                    uuid: widget.uuid)));
                           } catch (e) {
                             // Handle login error
                             print('Register failed: $e');

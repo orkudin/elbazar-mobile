@@ -1,5 +1,5 @@
 import 'package:elbazar_app/presentation/provider/auth_provider.dart';
-import 'package:elbazar_app/presentation/screens/register_customer_screen/customer_register_confirm.dart.dart';
+import 'package:elbazar_app/presentation/screens/register_customer_screen/customer_register_confirm.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 

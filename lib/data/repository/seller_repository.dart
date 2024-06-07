@@ -162,8 +162,12 @@ class SellerRepository {
     );
   }
 
-  Future<List<OrderEntity>> fetchSellerOrders({required String jwt}) async {
-    final response = await sellerApiClient.fetchSellerOrders(jwt: jwt);
+  Future<List<OrderEntity>> fetchSellerOrders({
+    required String jwt,
+    required String ordersFrom,
+  }) async {
+    final response = await sellerApiClient.fetchSellerOrders(
+        jwt: jwt, ordersFrom: ordersFrom);
 
     if (response['data'] is List) {
       return (response['data'] as List<dynamic>)

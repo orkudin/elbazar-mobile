@@ -172,6 +172,19 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     password: _passwordController.text,
                     role: selectedRole!,
                   );
+                  print('--------------3-------------');
+                  print(token);
+                  print('---------------3------------');
+                  print('--------------3-------------');
+                  print(token.role);
+                  print('---------------3------------');
+                  print('--------------3-------------');
+                  print(token.jwt);
+                  print('---------------3------------');
+                  print('--------------3-------------');
+                  print(token.userData);
+                  print('---------------3------------');
+
                   var userState;
                   if (token.role == 'ADMIN') {
                     userState = 'Adminka';
@@ -179,13 +192,15 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                         token.jwt, token.role, userState);
                     // ignore: use_build_context_synchronously
                     context.go('/adminPanel');
-                  } else if (token.role == 'SALES' ||
-                      token.role == 'CUSTOMER') {
+                  } else if (token.role == 'SALES') {
                     userState = SellerEntity.fromJson(token.userData);
                     sellerInfoStateNotifier.setSeller(userState);
                     authStateNotifier.authenticate(
                         token.jwt, token.role, userState);
                     // ignore: use_build_context_synchronously
+                    context.go('/home');
+                  } else if (token.role == 'CUSTOMER') {
+                    authStateNotifier.authenticate(token.jwt, token.role, null);
                     context.go('/home');
                   } else {
                     // ignore: use_build_context_synchronously

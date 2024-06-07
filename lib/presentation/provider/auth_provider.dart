@@ -39,7 +39,7 @@ final authStateProvider =
 class AuthStateNotifier extends StateNotifier<AuthState> {
   AuthStateNotifier() : super(const AuthState.unauthenticated());
 
-  void authenticate(String token, String role, SellerEntity userInfo) {
+  void authenticate(String token, String role, SellerEntity? userInfo) {
     state = AuthState.authenticated(token, role, userInfo);
   }
 
