@@ -1,0 +1,3 @@
+[submodule "lib/data/datasources"]
+	path = lib/data/datasources
+	url = https://github.com/orkudin/elbazar-mobile
