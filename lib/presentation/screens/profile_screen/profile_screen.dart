@@ -176,7 +176,7 @@
 
 import 'package:elbazar_app/presentation/provider/auth_provider.dart';
 import 'package:elbazar_app/presentation/screens/profile_screen/add_product_screen.dart';
-import 'package:elbazar_app/presentation/screens/profile_screen/order_screen.dart';
+import 'package:elbazar_app/presentation/screens/profile_screen/order/order_screen.dart';
 import 'package:elbazar_app/presentation/screens/profile_screen/prodile_edit_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
