@@ -30,11 +30,11 @@ class _ProductsListScreen extends ConsumerState<ProductsListScreen> {
   final int _pageSize = 4; // Adjust as needed
   late PagingController<int, ProductWithImages> _pagingController;
 
-  @override
-  void dispose() {
-    _pagingController.dispose();
-    super.deactivate();
-  }
+  // @override
+  // void dispose() {
+  //   _pagingController.dispose();
+  //   super.deactivate();
+  // }
 
   @override
   void initState() {

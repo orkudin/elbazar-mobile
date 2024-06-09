@@ -70,7 +70,7 @@ class CategoryCard extends StatelessWidget {
                   context,
                     MaterialPageRoute(
                       builder: (context) => SearchScreen(
-                          searchValue: '', searchTitle: category.name),
+                          searchValue: '', searchTitle: childCategory.name),
                     ));
 
               }

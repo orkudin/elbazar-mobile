@@ -61,19 +61,6 @@ class ProfileScreen extends ConsumerWidget {
                 margin:
                 const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
                 child: ListTile(
-                  title: const Text('Log out'),
-                  trailing: const Icon(Icons.arrow_forward),
-                  onTap: () {
-                    context.go('/login');
-                    ref.watch(authStateProvider.notifier).logout();
-                  },
-                ),
-              ),
-            if (authState.isAuthenticated)
-              Card(
-                margin:
-                const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-                child: ListTile(
                   title: const Text('Addresses'),
                   trailing: const Icon(Icons.arrow_forward),
                   onTap: () {
@@ -85,6 +72,20 @@ class ProfileScreen extends ConsumerWidget {
                   },
                 ),
               ),
+            if (authState.isAuthenticated)
+              Card(
+                margin:
+                const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                child: ListTile(
+                  title: const Text('Log out'),
+                  trailing: const Icon(Icons.logout_outlined),
+                  onTap: () {
+                    context.go('/login');
+                    ref.watch(authStateProvider.notifier).logout();
+                  },
+                ),
+              ),
+
           ],
         ),
       ),

@@ -44,7 +44,7 @@ class _SearchProductsListScreenState extends ConsumerState<SearchScreen> {
   int? _categoryId;
   int? _salesId;
   String? _searchTitle;
-  String _searchType = 'NONE';
+  String _searchType = 'NEW';
   Map<String, dynamic>? searchParams;
 
   @override
@@ -133,8 +133,9 @@ class _SearchProductsListScreenState extends ConsumerState<SearchScreen> {
 
   Widget _buildFilters() {
     return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        SizedBox(width: 16,),
         DropdownButton<String>(
           hint: const Text('Sort By'),
           value: _searchType,
@@ -166,18 +167,18 @@ class _SearchProductsListScreenState extends ConsumerState<SearchScreen> {
         //       _onSearch(_searchText);
         //     },
         //   ),
-        DropdownButton<int>(
-          hint: const Text('Sales'),
-          value: _salesId,
-          items: const [
-            DropdownMenuItem(value: 1, child: Text('Sale 1')),
-            DropdownMenuItem(value: 2, child: Text('Sale 2')),
-            // Add more sales
-          ],
-          onChanged: (value) {
-            _onSearch(_searchText);
-          },
-        ),
+        // DropdownButton<int>(
+        //   hint: const Text('Sales'),
+        //   value: _salesId,
+        //   items: const [
+        //     DropdownMenuItem(value: 1, child: Text('Sale 1')),
+        //     DropdownMenuItem(value: 2, child: Text('Sale 2')),
+        //     // Add more sales
+        //   ],
+        //   onChanged: (value) {
+        //     _onSearch(_searchText);
+        //   },
+        // ),
       ],
     );
   }
