@@ -4,8 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class CustomerRegisterConfirm extends ConsumerStatefulWidget {
-  const CustomerRegisterConfirm({super.key, required this.uuid});
+  const CustomerRegisterConfirm({super.key, required this.uuid, required this.email});
   final String uuid;
+  final String email;
 
   @override
   ConsumerState<CustomerRegisterConfirm> createState() =>
@@ -45,7 +46,7 @@ class _CustomerRegisterConfirmState
                     color: Theme.of(context).colorScheme.onBackground),
               ),
               Text(
-                'Enter your details below',
+                'Code sent to ${widget.email}. Enter your details below',
                 style: Theme.of(context).textTheme.titleMedium!.copyWith(
                     color: Theme.of(context).colorScheme.onBackground),
               ),

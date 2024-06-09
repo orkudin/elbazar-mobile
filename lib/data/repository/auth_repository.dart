@@ -51,16 +51,6 @@ class AuthRepository {
     return await authApiClient.registerCustomer(email: email);
   }
 
-  // Future<String> registerCustomerConfirm({
-  //   required String uuid,
-  //   required String code,
-  // }) async {
-  //   return await authApiClient.registerCustomerConfirm(
-  //     uuid: uuid,
-  //     code: code,
-  //   );
-  // }
-
   Future<dynamic> registerCustomerConfirm({
     required String uuid,
     required String code,

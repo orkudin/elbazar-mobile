@@ -1,9 +1,25 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:elbazar_app/data/models/product_with_images_model.dart';
+import 'package:elbazar_app/presentation/provider/auth_provider.dart';
 import 'package:elbazar_app/presentation/screens/widgets/products_detail_screen.dart';
 import 'package:elbazar_app/presentation/screens/widgets/image_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../provider/categories_provider.dart';
+import '../../provider/products_repo_provider.dart';
+import '../cart_screen/cart_screen.dart';
+
+final getCategoriesProvider = FutureProvider<dynamic>((ref) async {
+  final sellerRepository = ref.read(sellerRepositoryProvider);
+  return sellerRepository.getCategoriesList();
+});
+
+final addCartItem = FutureProvider.family<void, int>((ref, productId) async {
+  final customerRepository = ref.read(customerRepositoryProvider);
+  final authState = ref.watch(authStateProvider);
+  return customerRepository.addToCart(
+      jwt: authState.token, productId: productId, quantity: 1);
+});
 
 class CardProductItem extends ConsumerWidget {
   const CardProductItem({Key? key, required this.product, this.fromScreen})
@@ -14,6 +30,16 @@ class CardProductItem extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final categories = ref.read(categoriesProvider);
+
+    String? categoryName = product.categoryName;
+    if (categoryName == null) {
+      for (var category in categories) {
+        categoryName = category.getNameFromId(product.categoryId);
+        if (categoryName.isNotEmpty) break;
+      }
+    }
+
     return Card(
       margin: const EdgeInsets.all(8),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
@@ -30,7 +56,7 @@ class CardProductItem extends ConsumerWidget {
         child: Column(
           children: [
             _buildImageSlider(),
-            _buildProductDetails(context),
+            _buildProductDetails(context, categoryName!, ref, product.id),
           ],
         ),
       ),
@@ -51,7 +77,8 @@ class CardProductItem extends ConsumerWidget {
     );
   }
 
-  Widget _buildProductDetails(BuildContext context) {
+  Widget _buildProductDetails(
+      BuildContext context, String categoryName, WidgetRef ref, int productId) {
     return Expanded(
       flex: 1,
       child: Padding(
@@ -73,26 +100,42 @@ class CardProductItem extends ConsumerWidget {
               ),
             ),
             Text(
-              product.categoryName == null ? 'null' : product.categoryName,
+              categoryName,
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
             ),
-            _buildAddToCartButton(context),
+            _buildAddToCartButton(context, ref, productId),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildAddToCartButton(BuildContext context) {
+  Widget _buildAddToCartButton(
+      BuildContext context, WidgetRef ref, int productId) {
     return Row(children: [
       Expanded(
         child: IconButton(
-          onPressed: () {
-            ScaffoldMessenger.of(context).clearSnackBars();
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Product added to cart')),
-            );
+          onPressed: () async {
+            try {
+              // Trigger the delete operation
+              await ref.read(addCartItem(productId).future);
+
+              // Refresh the cart items to update the UI after deletion
+              ref.refresh(getCartProducts);
+            } catch (e) {
+              // Show an error if the deletion fails
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text('Failed to delete item: $e'),
+                  backgroundColor: Colors.red,
+                ),
+              );
+            }
+            // ScaffoldMessenger.of(context).clearSnackBars();
+            // ScaffoldMessenger.of(context).showSnackBar(
+            //   const SnackBar(content: Text('Product added to cart')),
+            // );
           },
           icon: AnimatedSwitcher(
             duration: const Duration(milliseconds: 300),

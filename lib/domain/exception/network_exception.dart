@@ -1,9 +1,18 @@
-class NetworkException implements Exception{
-  final int statusCode;
-  String? message;
+import 'package:dio/dio.dart';
 
-  NetworkException({required this.statusCode, required this.message});
+class NetworkException implements Exception{
+  late final int? statusCode;
+  late final String? message;
+
+  NetworkException({required this.message, this.statusCode});
+
+  factory NetworkException.fromDioError(DioException dioError) {
+    final response = dioError.response;
+    final message = response?.data['message'] ?? dioError.message;
+    final statusCode = response?.statusCode;
+    return NetworkException(message: message, statusCode: statusCode);
+  }
 
   @override
-  String toString() => 'NetworkException: status code $statusCode, message: $message';
+  List<Object?> get props => [message, statusCode];
 }

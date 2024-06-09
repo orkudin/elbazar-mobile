@@ -3,6 +3,7 @@ import 'package:elbazar_app/data/models/order_model/order_entity.dart';
 import 'package:elbazar_app/data/models/product_with_images_model.dart';
 import 'package:elbazar_app/domain/model/category.dart';
 
+import '../models/cart_model.dart';
 import '../models/users_model/seller_model.dart';
 
 class SellerRepository {
@@ -178,4 +179,6 @@ class SellerRepository {
       return []; // Or handle the case where data is not a list
     }
   }
+
+
 }

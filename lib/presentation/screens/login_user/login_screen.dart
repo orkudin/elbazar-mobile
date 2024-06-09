@@ -8,7 +8,7 @@ import '../../../data/models/users_model/admin_model.dart';
 import '../../../data/models/users_model/customer_model.dart';
 import '../../../data/models/users_model/seller_model.dart';
 import '../../../data/models/users_model/user_model.dart';
-
+import '../../../domain/exception/network_exception.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -61,8 +61,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 context,
                 controller: _usernameController,
                 label: 'Email',
-                validator: (value) =>
-                value == null || value.isEmpty ? 'Please enter your email' : null,
+                validator: (value) => value == null || value.isEmpty
+                    ? 'Please enter your email'
+                    : null,
               ),
               const SizedBox(height: 16),
               _buildTextField(
@@ -71,8 +72,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 label: 'Password',
                 obscureText: _obscurePassword,
                 suffixIcon: _buildPasswordVisibilityIcon(),
-                validator: (value) =>
-                value == null || value.isEmpty ? 'Please enter your password' : null,
+                validator: (value) => value == null || value.isEmpty
+                    ? 'Please enter your password'
+                    : null,
               ),
               const SizedBox(height: 16),
               _buildLoginButton(
@@ -116,13 +118,13 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   }
 
   Widget _buildTextField(
-      BuildContext context, {
-        required TextEditingController controller,
-        required String label,
-        bool obscureText = false,
-        Widget? suffixIcon,
-        String? Function(String?)? validator,
-      }) {
+    BuildContext context, {
+    required TextEditingController controller,
+    required String label,
+    bool obscureText = false,
+    Widget? suffixIcon,
+    String? Function(String?)? validator,
+  }) {
     return TextFormField(
       controller: controller,
       obscureText: obscureText,
@@ -151,11 +153,11 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     );
   }
 
-  Widget _buildLoginButton (
-      AuthRepository authRepository,
-      AuthStateNotifier authStateNotifier,
-      BuildContext context,
-      ) {
+  Widget _buildLoginButton(
+    AuthRepository authRepository,
+    AuthStateNotifier authStateNotifier,
+    BuildContext context,
+  ) {
     return Row(
       children: [
         Expanded(
@@ -175,30 +177,48 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     password: _passwordController.text,
                     role: selectedRole!,
                   );
-
+                  debugPrint('loginUserData login: $token');
                   UserModel userState;
                   if (token.role == 'ADMIN') {
                     userState = AdminModel();
-                    authStateNotifier.authenticate(token.jwt, token.role, userState);
+                    authStateNotifier.authenticate(
+                        token.jwt, token.role, userState);
                     context.go('/adminPanel');
                   } else if (token.role == 'SALES') {
                     userState = SellerModel.fromJson(token.userData);
-                    authStateNotifier.authenticate(token.jwt, token.role, userState);
+                    authStateNotifier.authenticate(
+                        token.jwt, token.role, userState);
                     context.go('/profile');
                   } else if (token.role == 'CUSTOMER') {
                     userState = CustomerModel.fromJson(token.userData);
-                    authStateNotifier.authenticate(token.jwt, token.role, userState);
+                    authStateNotifier.authenticate(
+                        token.jwt, token.role, userState);
                     context.go('/profile');
                   } else {
                     // ignore: use_build_context_synchronously
                     // context.go('/home');
                   }
-                } catch (e) {
-                  // Handle login error
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Incorrect login data')),
-                  );
                 }
+                catch (e) {
+                  if (e is NetworkException) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text(e.message!)),
+                    );
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                          content:
+                          Text('Incorrect login data. Check email or password')),
+                    );
+                  }
+                  print('Register failed: $e');
+                }
+                // catch (e) {
+                //   // Handle login error
+                //   ScaffoldMessenger.of(context).showSnackBar(
+                //     SnackBar(content: Text('${e!}')),
+                //   );
+                // }
               }
             },
             child: const Text(

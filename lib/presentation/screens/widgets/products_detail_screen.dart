@@ -138,7 +138,7 @@ class ProductDetailScreen extends ConsumerWidget {
                 context,
                 MaterialPageRoute(
                   builder: (context) => SearchScreen(
-                      searchValue: '', categoryId: product.categoryId),
+                      searchValue: '', categoryId: product.categoryId, searchTitle: product.categoryName),
                 ));
           },
           child: Text(

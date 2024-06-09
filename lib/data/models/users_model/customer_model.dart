@@ -2,17 +2,17 @@ import 'package:elbazar_app/data/models/users_model/user_model.dart';
 
 import '../address_model.dart';
 
-class CustomerModel extends UserModel{
+class CustomerModel extends UserModel {
   final int id;
   final bool deleted;
   final DateTime created;
   final String email;
-  final String firstName;
-  final String lastName;
+  final String? firstName;
+  final String? lastName;
   final String phone;
   final String iin;
   final String gender;
-  final AddressModel address;
+  final AddressModel? address;
 
   CustomerModel({
     required this.id,
@@ -24,7 +24,7 @@ class CustomerModel extends UserModel{
     required this.phone,
     required this.iin,
     required this.gender,
-    required this.address,
+    this.address,
   });
 
   factory CustomerModel.fromJson(Map<String, dynamic> json) {
@@ -38,7 +38,9 @@ class CustomerModel extends UserModel{
       phone: json['phone'],
       iin: json['iin'],
       gender: json['gender'],
-      address: AddressModel.fromJson(json['address']),
+      address: json['address'] != null
+          ? AddressModel.fromJson(json['address'])
+          : null,
     );
   }
 }

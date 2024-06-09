@@ -68,11 +68,11 @@ class CategoryCard extends StatelessWidget {
               } else {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(
-                    builder: (context) => SearchScreen(
-                        searchValue: '', categoryId: childCategory.id),
-                  ),
-                );
+                    MaterialPageRoute(
+                      builder: (context) => SearchScreen(
+                          searchValue: '', searchTitle: category.name),
+                    ));
+
               }
             },
           );
@@ -81,3 +81,4 @@ class CategoryCard extends StatelessWidget {
     );
   }
 }
+

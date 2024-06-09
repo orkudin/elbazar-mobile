@@ -1,6 +1,7 @@
 import 'package:elbazar_app/config/routes/app_routing.dart';
 import 'package:elbazar_app/config/theme/color_theme.dart';
 import 'package:elbazar_app/presentation/provider/auth_provider.dart';
+import 'package:elbazar_app/presentation/provider/categories_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -11,15 +12,16 @@ import 'config/secure_Storage_service.dart';
 final getIt = GetIt.instance;
 
 void setupLocator() {
-  getIt.registerLazySingleton<SecureStorageService>(() => SecureStorageService());
+  getIt.registerLazySingleton<SecureStorageService>(
+      () => SecureStorageService());
   getIt.registerLazySingleton<AuthStateNotifier>(
-          () => AuthStateNotifier(secureStorageService: getIt()));
+      () => AuthStateNotifier(secureStorageService: getIt()));
 }
 
 void main() async {
   await dotenv.load(fileName: ".env");
   final apiBaseUrl = dotenv.env['BASE_URL'];
-print(apiBaseUrl);
+  print(apiBaseUrl);
   setupLocator();
 
   runApp(
@@ -29,11 +31,13 @@ print(apiBaseUrl);
   );
 }
 
-class MainApp extends StatelessWidget {
+class MainApp extends ConsumerWidget {
   const MainApp({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    ref.read(categoriesProvider.notifier);
+
     return MaterialApp.router(
       routerConfig: router,
       themeMode: ThemeMode.system,

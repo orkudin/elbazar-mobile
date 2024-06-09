@@ -27,10 +27,11 @@ final searchProductsProvider =
 );
 
 class SearchScreen extends ConsumerStatefulWidget {
-  const SearchScreen({Key? key, required this.searchValue, this.categoryId})
+  const SearchScreen({Key? key, required this.searchValue, this.categoryId, this.searchTitle})
       : super(key: key);
   final String searchValue;
   final int? categoryId;
+  final String? searchTitle;
 
   @override
   // ignore: library_private_types_in_public_api
@@ -42,6 +43,7 @@ class _SearchProductsListScreenState extends ConsumerState<SearchScreen> {
   String _searchText = '';
   int? _categoryId;
   int? _salesId;
+  String? _searchTitle;
   String _searchType = 'NONE';
   Map<String, dynamic>? searchParams;
 
@@ -50,6 +52,7 @@ class _SearchProductsListScreenState extends ConsumerState<SearchScreen> {
     super.initState();
     _searchText = widget.searchValue;
     _categoryId = widget.categoryId;
+    _searchTitle = widget.searchTitle;
     searchParams = {
       'page': 0,
       'size': 10,
@@ -85,7 +88,7 @@ class _SearchProductsListScreenState extends ConsumerState<SearchScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Search Results "$_searchText"'),
+        title: Text('Search Results "${_searchTitle ?? _searchText}"'),
       ),
       body: Column(
         children: [

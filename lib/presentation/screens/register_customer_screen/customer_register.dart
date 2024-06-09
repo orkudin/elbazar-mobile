@@ -3,6 +3,9 @@ import 'package:elbazar_app/presentation/screens/register_customer_screen/custom
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../config/network_error_model/network_excepton.dart';
+import '../../../domain/exception/network_exception.dart';
+
 class CustomerRegister extends ConsumerStatefulWidget {
   const CustomerRegister({super.key});
 
@@ -76,29 +79,58 @@ class _CustomerRegisterState extends ConsumerState<CustomerRegister> {
                         backgroundColor: const Color.fromRGBO(219, 68, 68, 1),
                         foregroundColor: const Color.fromRGBO(250, 250, 250, 1),
                       ),
+                      // onPressed: () async {
+                      //   if (_formKey.currentState!.validate()) {
+                      //     try {
+                      //       final response = await authRepository
+                      //           .registerCustomer(
+                      //         email: _emailNameController.text,
+                      //       )
+                      //           .catchError((error, stackTrace) {
+                      //         return ScaffoldMessenger.of(context).showSnackBar(
+                      //           SnackBar(content: Text('${error}')),
+                      //         );
+                      //       }).then(
+                      //         (uuid) => Navigator.of(context).push(
+                      //           MaterialPageRoute(
+                      //             builder: (context) =>
+                      //                 CustomerRegisterConfirm(uuid: uuid),
+                      //           ),
+                      //         ),
+                      //       );
+                      //     } catch (e) {
+                      //       // Handle login error
+                      //       print('Register failed: $e');
+                      //     }
+                      //   }
+                      // },
+
                       onPressed: () async {
                         if (_formKey.currentState!.validate()) {
                           try {
-                            await authRepository
-                                .registerCustomer(
-                                  email: _emailNameController.text,
-                                )
-                                .then(
-                                  (uuid) => Navigator.of(context).push(
-                                    MaterialPageRoute(
-                                      builder: (context) =>
-                                          CustomerRegisterConfirm(uuid: uuid),
-                                    ),
-                                  ),
-                                );
+                            final response =
+                                await authRepository.registerCustomer(
+                              email: _emailNameController.text,
+                            );
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    CustomerRegisterConfirm(uuid: response, email: _emailNameController.text),
+                              ),
+                            );
                           } catch (e) {
-                            // Handle login error
+                            if (e is NetworkException) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(content: Text(e.message!)),
+                              );
+                            } else {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                    content:
+                                        Text('An unexpected error occurred1')),
+                              );
+                            }
                             print('Register failed: $e');
-                            // ignore: use_build_context_synchronously
-                            // ScaffoldMessenger.of(context).showSnackBar(
-                            //   const SnackBar(
-                            //       content: Text('Incorrect login data')),
-                            // );
                           }
                         }
                       },
