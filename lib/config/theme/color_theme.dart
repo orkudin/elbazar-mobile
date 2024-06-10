@@ -29,7 +29,7 @@ class AppTheme {
     fontFamily: 'Poppins',
     brightness: Brightness.light,
     primaryColor: Colors.blue,
-    textTheme: CustomTextTheme.lightTextTheme,
+    textTheme: GoogleFonts.poppinsTextTheme(),
     chipTheme: CustomChipTheme.lightChipTheme,
     scaffoldBackgroundColor: Colors.white,
     appBarTheme: CustomAppBarTheme.lightAppBarTheme,
@@ -43,10 +43,10 @@ class AppTheme {
   // Dark Theme
   static ThemeData darkTheme = ThemeData(
     useMaterial3: true,
-    fontFamily: 'Poppins',
+    // fontFamily: 'Poppins',
     brightness: Brightness.light,
     primaryColor: Colors.blue,
-    textTheme: CustomTextTheme.darkTextTheme,
+    textTheme: GoogleFonts.poppinsTextTheme(),
     chipTheme: CustomChipTheme.darkChipTheme,
     scaffoldBackgroundColor: Colors.black,
     appBarTheme: CustomAppBarTheme.darkAppBarTheme,

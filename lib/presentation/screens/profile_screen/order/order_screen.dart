@@ -25,13 +25,16 @@ enum StatusList {
   CANCELED_BY_SALES
 }
 
-class SellerOrdersScreen extends ConsumerWidget {
-  const SellerOrdersScreen({super.key});
+class SellerOrdersScreen extends ConsumerStatefulWidget {
+  const SellerOrdersScreen({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final authState = ref.watch(authStateProvider);
-    final ordersFrom = authState.role == 'SALES' ? 'sales' : 'customer';
+  _SellerOrdersScreenState createState() => _SellerOrdersScreenState();
+}
+
+class _SellerOrdersScreenState extends ConsumerState<SellerOrdersScreen> {
+  @override
+  Widget build(BuildContext context) {
     final List listStatusTitle = [
       'Created',
       'Paid',
@@ -41,143 +44,160 @@ class SellerOrdersScreen extends ConsumerWidget {
       'Canceled by customer',
       'Canceled by sales'
     ];
+    final authState = ref.watch(authStateProvider);
+    final ordersFrom = authState.role == 'SALES' ? 'sales' : 'customer';
+    Future<void> _refreshOrders() async {
+      await ref.refresh(ordersProvider(ordersFrom));
+    }
 
     return Scaffold(
       appBar: AppBar(
         title: const Text('My Orders'),
       ),
-      body: ref.watch(ordersProvider(ordersFrom)).when(
-            data: (orders) {
-              final createdOrders =
-                  orders.where((order) => order.status == 'CREATED').toList();
-              final paidOrders =
-                  orders.where((order) => order.status == 'PAID').toList();
-              final sentOrders =
-                  orders.where((order) => order.status == 'SENT').toList();
-              final deliveredOrders =
-                  orders.where((order) => order.status == 'DELIVERED').toList();
-              final doneOrders =
-                  orders.where((order) => order.status == 'DONE').toList();
-              final canceledByCustomerOrders = orders
-                  .where((order) => order.status == 'CANCELED_BY_CUSTOMER')
-                  .toList();
-              final canceledBySalesOrders = orders
-                  .where((order) => order.status == 'CANCELED_BY_SALES')
-                  .toList();
+      body: RefreshIndicator(
+        onRefresh: _refreshOrders,
+        child: ref.watch(ordersProvider(ordersFrom)).when(
+              data: (orders) {
+                final createdOrders =
+                    orders.where((order) => order.status == 'CREATED').toList();
+                final paidOrders =
+                    orders.where((order) => order.status == 'PAID').toList();
+                final sentOrders =
+                    orders.where((order) => order.status == 'SENT').toList();
+                final deliveredOrders = orders
+                    .where((order) => order.status == 'DELIVERED')
+                    .toList();
+                final doneOrders =
+                    orders.where((order) => order.status == 'DONE').toList();
+                final canceledByCustomerOrders = orders
+                    .where((order) => order.status == 'CANCELED_BY_CUSTOMER')
+                    .toList();
+                final canceledBySalesOrders = orders
+                    .where((order) => order.status == 'CANCELED_BY_SALES')
+                    .toList();
 
-              if (authState.role == 'CUSTOMER') {
-                return ListView.builder(
-                    itemCount: orders.length,
-                    itemBuilder: (context, index) {
-                      final order = orders[index];
-                      return Card(
-                        child: ListTile(
-                          subtitle: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text('Order ID: ${order.orderid}'),
-                              Text('Product ID: ${order.productId}'),
-                              Text('Quantity: ${order.quantity}'),
-                              Text('Price: ${order.price}'),
-                              Text('Status: ${order.status}'),
-                            ],
+                if (orders.isEmpty) {
+                  return Center(child: Text('There is no orders'));
+                } else if (authState.role == 'CUSTOMER') {
+                  return ListView.builder(
+                      itemCount: orders.length,
+                      itemBuilder: (context, index) {
+                        final order = orders[index];
+                        return Card(
+                          child: ListTile(
+                            subtitle: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text('Order ID: ${order.orderid}'),
+                                Text('Product ID: ${order.productId}'),
+                                Text('Quantity: ${order.quantity}'),
+                                Text('Price: ${order.price}'),
+                                Text('Status: ${order.status}'),
+                              ],
+                            ),
                           ),
-                        ),
-                      );
-                    });
-              }
-
-              if (authState.role == 'SALES') {
-                return ListView(
-                  children: [
-                    Card(
-                        child: ListTile(
-                      title: const Text('Created'),
-                      trailing: Text('${createdOrders.length ?? '0'}'),
-                      onTap: () => Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => OrderScreenStatus(
-                                statusList: StatusList.CREATED,
-                                orders: createdOrders),
-                          )),
-                    )),
-                    Card(
-                        child: ListTile(
-                      title: const Text('Paid'),
-                      trailing: Text('${paidOrders.length ?? '0'}'),
-                      onTap: () => Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => OrderScreenStatus(
-                                statusList: StatusList.PAID, orders: paidOrders),
-                          )),
-                    )),
-                    Card(
-                        child: ListTile(
-                      title: const Text('Sent'),
-                      trailing: Text('${sentOrders.length ?? '0'}'),
-                      onTap: () => Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => OrderScreenStatus(
-                                statusList: StatusList.SENT, orders: sentOrders),
-                          )),
-                    )),
-                    Card(
-                        child: ListTile(
-                      title: const Text('Delivered'),
-                      trailing: Text('${deliveredOrders.length ?? '0'}'),
-                      onTap: () => Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => OrderScreenStatus(
-                                statusList: StatusList.DELIVERED,
-                                orders: deliveredOrders),
-                          )),
-                    )),
-                    Card(
-                        child: ListTile(
-                      title: const Text('Done'),
-                      trailing: Text('${doneOrders.length ?? '0'}'),
-                      onTap: () => Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => OrderScreenStatus(
-                                statusList: StatusList.DONE, orders: doneOrders),
-                          )),
-                    )),
-                    Card(
-                        child: ListTile(
-                      title: const Text('Cancelled by customer'),
-                      trailing: Text('${canceledByCustomerOrders.length ?? '0'}'),
-                      onTap: () => Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => OrderScreenStatus(
-                                statusList: StatusList.CANCELED_BY_CUSTOMER,
-                                orders: canceledByCustomerOrders),
-                          )),
-                    )),
-                    Card(
-                        child: ListTile(
-                      title: const Text('Cancelled by sales'),
-                      trailing: Text('${canceledBySalesOrders.length ?? '0'}'),
-                      onTap: () => Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => OrderScreenStatus(
-                                statusList: StatusList.CANCELED_BY_SALES,
-                                orders: canceledBySalesOrders),
-                          )),
-                    )),
-                  ],
-                );
-              }
-            },
-            error: (error, stackTrace) => Center(child: Text('Error: $error')),
-            loading: () => const Center(child: CircularProgressIndicator()),
-          ),
+                        );
+                      });
+                } else if (authState.role == 'SALES') {
+                  return ListView(
+                    children: [
+                      Card(
+                          child: ListTile(
+                        title: const Text('Created'),
+                        trailing: Text('${createdOrders.length ?? '0'}'),
+                        onTap: () => Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => OrderScreenStatus(
+                                  statusList: StatusList.CREATED,
+                                  orders: createdOrders),
+                            )),
+                      )),
+                      Card(
+                          child: ListTile(
+                        title: const Text('Paid'),
+                        trailing: Text('${paidOrders.length ?? '0'}'),
+                        onTap: () => Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => OrderScreenStatus(
+                                  statusList: StatusList.PAID,
+                                  orders: paidOrders),
+                            )),
+                      )),
+                      Card(
+                          child: ListTile(
+                        title: const Text('Sent'),
+                        trailing: Text('${sentOrders.length ?? '0'}'),
+                        onTap: () => Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => OrderScreenStatus(
+                                  statusList: StatusList.SENT,
+                                  orders: sentOrders),
+                            )),
+                      )),
+                      Card(
+                          child: ListTile(
+                        title: const Text('Delivered'),
+                        trailing: Text('${deliveredOrders.length ?? '0'}'),
+                        onTap: () => Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => OrderScreenStatus(
+                                  statusList: StatusList.DELIVERED,
+                                  orders: deliveredOrders),
+                            )),
+                      )),
+                      Card(
+                          child: ListTile(
+                        title: const Text('Done'),
+                        trailing: Text('${doneOrders.length ?? '0'}'),
+                        onTap: () => Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => OrderScreenStatus(
+                                  statusList: StatusList.DONE,
+                                  orders: doneOrders),
+                            )),
+                      )),
+                      Card(
+                          child: ListTile(
+                        title: const Text('Cancelled by customer'),
+                        trailing:
+                            Text('${canceledByCustomerOrders.length ?? '0'}'),
+                        onTap: () => Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => OrderScreenStatus(
+                                  statusList: StatusList.CANCELED_BY_CUSTOMER,
+                                  orders: canceledByCustomerOrders),
+                            )),
+                      )),
+                      Card(
+                          child: ListTile(
+                        title: const Text('Cancelled by sales'),
+                        trailing:
+                            Text('${canceledBySalesOrders.length ?? '0'}'),
+                        onTap: () => Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => OrderScreenStatus(
+                                  statusList: StatusList.CANCELED_BY_SALES,
+                                  orders: canceledBySalesOrders),
+                            )),
+                      )),
+                    ],
+                  );
+                } else {
+                  return Center(child: Text('Log in into account'));
+                }
+              },
+              error: (error, stackTrace) =>
+                  Center(child: Text('Error: $error')),
+              loading: () => const Center(child: CircularProgressIndicator()),
+            ),
+      ),
     );
   }
 }

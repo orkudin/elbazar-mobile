@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:elbazar_app/data/models/city_model.dart';
 import '../../../provider/auth_provider.dart';
 import '../../../provider/customer_repository_provider.dart';
+import 'adress_screen.dart';
 
 final citiesProvider = FutureProvider<List<CityModel>>((ref) async {
   final customerRepository = ref.read(customerRepositoryProvider);
@@ -39,6 +40,7 @@ class _AddressAddScreenState extends ConsumerState<AddressAddScreen> {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Address added successfully!')),
         );
+        ref.refresh(addressProvider);
         Navigator.of(context).pop(); // Return to the previous screen
       } catch (e) {
         ScaffoldMessenger.of(context).showSnackBar(

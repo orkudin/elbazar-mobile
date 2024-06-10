@@ -1,5 +1,6 @@
 import 'package:elbazar_app/data/datasources/client_api/admin_api_client.dart';
 import 'package:elbazar_app/data/datasources/client_api/customer_api_client.dart';
+import 'package:flutter/cupertino.dart';
 
 import '../models/address_model.dart';
 import '../models/cart_model.dart';
@@ -86,7 +87,8 @@ class CustomerRepository {
     required String jwt,
     required int cartItemId,
   }) async {
-    await customerApiClient.deleteCartItem(jwtToken: jwt, cartItemId: cartItemId);
+    await customerApiClient.deleteCartItem(
+        jwtToken: jwt, cartItemId: cartItemId);
   }
 
   Future<void> addToCart({
@@ -99,5 +101,12 @@ class CustomerRepository {
       productId: productId,
       quantity: quantity,
     );
+  }
+
+  Future<void> postOrder({
+    required String jwt,
+    required Map<String, dynamic> selectedItems,
+  }) async {
+    await customerApiClient.postOrder(jwt: jwt, selectedItems: selectedItems);
   }
 }

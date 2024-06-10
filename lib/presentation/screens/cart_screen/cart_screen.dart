@@ -38,79 +38,145 @@ class _CartPageState extends ConsumerState<CartScreen> {
   Widget build(BuildContext context) {
     final getCustomerCart = ref.watch(getCartProducts);
     final selectedToBuyItems = ref.watch(selectedToBuyItemsProvider);
-
     return Scaffold(
       appBar: AppBar(
         title: Text('Cart'),
       ),
-      body: getCustomerCart.when(
-        data: (products) {
-          if (products.isEmpty) {
-            return Center(child: Text('There is no items in cart'));
-          } else {
-            return RefreshIndicator(
-              onRefresh: _refreshCartProducts,
-              child: ListView.builder(
+      body: RefreshIndicator(
+        onRefresh: _refreshCartProducts,
+        child: getCustomerCart.when(
+          data: (products) {
+            if (products.isEmpty) {
+              return Center(child: Text('There is no items in cart'));
+            } else {
+              return ListView.builder(
                 itemCount: products.length,
                 itemBuilder: (context, index) {
                   final item = products[index];
-                  return Card(
-                    margin: EdgeInsets.all(8),
-                    child: ListTile(
-                      title: TextButton(
-                        style: ButtonStyle(alignment: Alignment.centerLeft),
-                        child: Text(
-                          item.product.name,
-                          style: TextStyle(fontSize: 16),
-                        ),
-                        onPressed: () => Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => ProductDetailScreen(
-                                  productId: item.product.id),
-                            )),
-                      ),
-                      subtitle: Text(item.product.category.name),
-                      // trailing: Text('${item.quantity} x \$${item.product.price} = \$${item.totalPrice}'),
-                      trailing: IconButton(
-                        icon: Icon(Icons.delete, color: Colors.red),
-                        onPressed: () async {
-                          try {
-                            // Trigger the delete operation
-                            await ref.read(deleteItemCart(item.id).future);
+                  return Column(
+                    children: [
+                      Card(
+                        margin: EdgeInsets.all(8),
+                        child: ListTile(
+                          title: TextButton(
+                            style: ButtonStyle(alignment: Alignment.centerLeft),
+                            child: Text(
+                              item.product.name,
+                              style: TextStyle(fontSize: 16),
+                            ),
+                            onPressed: () => Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => ProductDetailScreen(
+                                      productId: item.product.id),
+                                )),
+                          ),
+                          subtitle: Text(item.product.category.name),
+                          // trailing: Text('${item.quantity} x \$${item.product.price} = \$${item.totalPrice}'),
+                          trailing: IconButton(
+                            icon: Icon(Icons.delete, color: Colors.red),
+                            onPressed: () async {
+                              try {
+                                // Trigger the delete operation
+                                await ref.read(deleteItemCart(item.id).future);
 
-                            // Refresh the cart items to update the UI after deletion
-                            ref.refresh(getCartProducts);
-                          } catch (e) {
-                            // Show an error if the deletion fails
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text('Failed to delete item: $e'),
-                                backgroundColor: Colors.red,
-                              ),
-                            );
+                                // Refresh the cart items to update the UI after deletion
+                                ref.refresh(getCartProducts);
+                              } catch (e) {
+                                // Show an error if the deletion fails
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text('Failed to delete item: $e'),
+                                    backgroundColor: Colors.red,
+                                  ),
+                                );
+                              }
+                            },
+                          ),
+                          isThreeLine: true,
+                          leading: CircleAvatar(
+                            child: Text(item.quantity.toString()),
+                          ),
+                        ),
+                      ),
+
+
+                      CheckboxListTile(
+                        value: selectedToBuyItems.any((selectedItem) =>
+                            selectedItem['product_id'] == item.product.id),
+                        onChanged: (value) {
+                          if (value != null && value) {
+                            // Item is checked, add it to the provider
+                            ref
+                                .read(selectedToBuyItemsProvider.notifier)
+                                .state = [
+                              ...selectedToBuyItems,
+                              {
+                                'product_id': item.product.id,
+                                'quantity': item.quantity,
+                                'order_id': item.id,
+
+                              }
+                            ];
+                          } else {
+                            ref
+                                .read(selectedToBuyItemsProvider.notifier)
+                                .state = [
+                              ...selectedToBuyItems
+                                  .where((selectedItem) =>
+                                      selectedItem['product_id'] !=
+                                      item.product.id)
+                                  .toList()
+                            ];
                           }
                         },
+                        title: Text('Select to buy'),
                       ),
-                      isThreeLine: true,
-                      leading: CircleAvatar(
-                        child: Text(item.quantity.toString()),
-                      ),
-                    ),
+                    ],
                   );
                 },
-              ),
+              );
+            }
+          },
+          error: (error, stackTrace) {
+            print('Error: $error');
+            return Center(
+              child: Text('Error: $error'),
             );
-          }
-        },
-        error: (error, stackTrace) {
-          print('Error: $error');
-          return Center(
-            child: Text('Error: $error'),
-          );
-        },
-        loading: () => Center(child: CircularProgressIndicator()),
+          },
+          loading: () => Center(child: CircularProgressIndicator()),
+        ),
       ),
+      floatingActionButton: selectedToBuyItems.isNotEmpty
+          ? FloatingActionButton.extended(
+              onPressed: () async {
+                try {
+
+                  for(var items in selectedToBuyItems){
+                    debugPrint('selectedToBuyItems id: ${items}');
+
+                    await ref.read(customerApiClientProvider).postOrder(
+                      jwt: ref.read(authStateProvider).token,
+                      selectedItems: items,
+                    );
+                    debugPrint('selectedToBuyItems id: ${items['product_id']}');
+                  }
+                  ref.refresh(getCartProducts);
+
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('Order submitted successfully')),
+                  );
+                  ref.read(selectedToBuyItemsProvider.notifier).state = [];
+                } catch (e) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('Failed to submit order: $e')),
+                  );
+                }
+              },
+              label: Text('Post Order'),
+              icon: Icon(Icons.shopping_cart),
+            )
+          : null,
     );
   }
 }

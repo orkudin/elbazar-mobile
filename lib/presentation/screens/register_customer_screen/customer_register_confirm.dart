@@ -62,6 +62,7 @@ class _CustomerRegisterConfirmState
                         color: Theme.of(context).colorScheme.onBackground),
                   ),
                 ),
+                keyboardType: TextInputType.number,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Please enter your code';
