@@ -103,7 +103,6 @@ import 'package:elbazar_app/data/models/city_model.dart';
 import '../../../provider/auth_provider.dart';
 import '../../../provider/customer_repository_provider.dart';
 
-
 final citiesProvider = FutureProvider<List<CityModel>>((ref) async {
   final customerRepository = ref.read(customerRepositoryProvider);
   return await customerRepository.getCitiesList();
@@ -201,17 +200,23 @@ class _AddressEditScreenState extends ConsumerState<AddressEditScreen> {
               error: (error, stackTrace) =>
                   Text('Error loading cities: $error'),
             ),
-            SizedBox(height: 16,),
+            SizedBox(
+              height: 16,
+            ),
             TextField(
               controller: _streetController,
               decoration: const InputDecoration(labelText: 'Street'),
-            ),            SizedBox(height: 16,),
-
+            ),
+            SizedBox(
+              height: 16,
+            ),
             TextField(
               controller: _houseController,
               decoration: const InputDecoration(labelText: 'House'),
-            ),            SizedBox(height: 16,),
-
+            ),
+            SizedBox(
+              height: 16,
+            ),
             TextField(
               controller: _apartmentsController,
               decoration: const InputDecoration(labelText: 'Apartments'),
@@ -227,4 +232,3 @@ class _AddressEditScreenState extends ConsumerState<AddressEditScreen> {
     );
   }
 }
-

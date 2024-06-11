@@ -108,5 +108,13 @@ class CustomerRepository {
     required Map<String, dynamic> selectedItems,
   }) async {
     await customerApiClient.postOrder(jwt: jwt, selectedItems: selectedItems);
+    await customerApiClient.payOrder(jwt: jwt, orderId: selectedItems['order_id']);
+  }
+
+  Future<void> payOrder({
+    required String jwt,
+    required int orderId,
+  }) async {
+    await customerApiClient.payOrder(jwt: jwt, orderId: orderId);
   }
 }
