@@ -129,15 +129,27 @@ class _PaymentScreenState extends ConsumerState<PaymentScreen> {
                           for (var items in selectedToBuyItems) {
                             debugPrint('selectedToBuyItems id: ${items}');
 
-                            await ref.read(customerApiClientProvider).postOrder(
+                            await ref.watch(customerApiClientProvider).postOrder(
                                   jwt: ref.read(authStateProvider).token,
                                   selectedItems: items,
                                 );
+                            debugPrint(
+                                'selectedToBuyItems cart_id: ${items['cart_id']}');
+                            await ref
+                                .read(customerApiClientProvider)
+                                .deleteCartItem(
+                                    jwtToken: ref.read(authStateProvider).token,
+                                    cartItemId: items['cart_id']);
+                            // await ref.read(customerApiClientProvider).deleteCartItem(jwtToken: ref.read(authStateProvider).token, cartItemId: cartItemId)
                             debugPrint(
                                 'selectedToBuyItems id: ${items['product_id']}');
                           }
                           ref.read(selectedToBuyItemsProvider.notifier).state =
                               [];
+                          ref.refresh(getCartProducts);
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text('Thank you for purchasing')),
+                          );
                           Navigator.pop(context);
                         } on Exception catch (e) {
                           ScaffoldMessenger.of(context).showSnackBar(

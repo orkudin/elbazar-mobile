@@ -103,12 +103,12 @@ class CustomerRepository {
     );
   }
 
-  Future<void> postOrder({
+  Future<dynamic> postOrder({
     required String jwt,
     required Map<String, dynamic> selectedItems,
   }) async {
-    await customerApiClient.postOrder(jwt: jwt, selectedItems: selectedItems);
-    await customerApiClient.payOrder(jwt: jwt, orderId: selectedItems['order_id']);
+    await customerApiClient
+        .postOrder(jwt: jwt, selectedItems: selectedItems);
   }
 
   Future<void> payOrder({
@@ -117,4 +117,24 @@ class CustomerRepository {
   }) async {
     await customerApiClient.payOrder(jwt: jwt, orderId: orderId);
   }
+
+  //
+  // Future<int> postOrder({
+  //   required String jwt,
+  //   required Map<String, dynamic> selectedItems,
+  // }) async {
+  //   final orderId = await customerApiClient.postOrder(
+  //     jwt: jwt,
+  //     selectedItems: selectedItems,
+  //   );
+  //   debugPrint('Order created with ID: $orderId');
+  //   return orderId;
+  // }
+  //
+  // Future<void> payOrder({
+  //   required String jwt,
+  //   required int orderId,
+  // }) async {
+  //   await customerApiClient.payOrder(jwt: jwt, orderId: orderId);
+  // }
 }

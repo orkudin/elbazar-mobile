@@ -127,7 +127,7 @@ class _CustomerRegisterState extends ConsumerState<CustomerRegister> {
                               ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(
                                     content:
-                                        Text('An unexpected error occurred1')),
+                                        Text('An unexpected error occurred')),
                               );
                             }
                             print('Register failed: $e');

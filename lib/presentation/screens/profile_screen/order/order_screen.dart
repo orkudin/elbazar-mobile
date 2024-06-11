@@ -78,27 +78,8 @@ class _SellerOrdersScreenState extends ConsumerState<SellerOrdersScreen> {
 
                 if (orders.isEmpty) {
                   return Center(child: Text('There is no orders'));
-                } else if (authState.role == 'CUSTOMER') {
-                  return ListView.builder(
-                      itemCount: orders.length,
-                      itemBuilder: (context, index) {
-                        final order = orders[index];
-                        return Card(
-                          child: ListTile(
-                            subtitle: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text('Order ID: ${order.orderid}'),
-                                Text('Product ID: ${order.productId}'),
-                                Text('Quantity: ${order.quantity}'),
-                                Text('Price: ${order.price}'),
-                                Text('Status: ${order.status}'),
-                              ],
-                            ),
-                          ),
-                        );
-                      });
-                } else if (authState.role == 'SALES') {
+                }
+                else if (authState.isAuthenticated) {
                   return ListView(
                     children: [
                       Card(

@@ -20,7 +20,6 @@ class OrderScreenStatus extends ConsumerWidget {
       body: orders.isNotEmpty
           ? ListView.builder(
               shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
               itemCount: orders.length,
               itemBuilder: (context, index) {
                 final order = orders[index];
